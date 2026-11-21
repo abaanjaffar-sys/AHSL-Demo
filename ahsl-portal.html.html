@@ -1,0 +1,2026 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#877138">
+<title>Report Verification Portal — Concept Prototype v3 (ISA 405)</title>
+<meta name="robots" content="noindex, nofollow">
+<style>
+:root{
+  --gold:#A68B45; --gold-strong:#877138; --gold-strong-hover:#6F5D2D; --gold-deep:#7A6428; --gold-soft:#F3EBD6;
+  --blue:#286FE4; --blue-hover:#1F5CC0; --blue-deep:#2F69C9; --blue-logo:#5B9BD5; --field-border:#8A95A3;
+  --sky:#EAF4FD; --cream:#FBF8EA;
+  --bg:#FFFFFF; --surface:#FFFFFF; --surface-2:#F6F7F9;
+  --ink:#2E2F33; --muted:#5E6570; --line:#E2E5EA; --strip:#33343A;
+  --ok:#2A7348; --ok-bg:#E6F4EC;
+  --warn:#9A6200; --warn-bg:#FDF1DC;
+  --info:#2F69C9; --info-bg:#E5EEFC;
+  --grey:#5F6672; --grey-bg:#EEF0F3;
+  --bad:#A61B1B; --bad-bg:#FBE7E7;
+  --alt:#B4410C; --alt-bg:#FDEBDF;
+  --shadow:0 1px 2px rgba(20,25,35,.06),0 6px 20px rgba(20,25,35,.07);
+  --serif:Georgia,"Times New Roman",Times,serif;
+  --sans:"Montserrat","Segoe UI",system-ui,-apple-system,Roboto,"Helvetica Neue",Arial,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  color-scheme:light;
+}
+:root[data-theme="dark"]{
+  --gold:#C7AA62; --gold-strong:#6E5B2A; --gold-strong-hover:#5C4C23; --gold-deep:#C7AA62; --gold-soft:#2E2A1E;
+  --blue:#6FA3F5; --blue-hover:#8DB6F7; --blue-deep:#8DB6F7; --blue-logo:#6FA8DF; --field-border:#6B7482;
+  --sky:#16202C; --cream:#1E1C16;
+  --bg:#121418; --surface:#1A1D23; --surface-2:#20242B;
+  --ink:#ECEDEF; --muted:#A5ACB7; --line:#2E333C; --strip:#0B0C0E;
+  --ok:#6FCF97; --ok-bg:#16301F;
+  --warn:#F2B552; --warn-bg:#33270F;
+  --info:#8DB6F7; --info-bg:#172540;
+  --grey:#B0B6C0; --grey-bg:#262A31;
+  --bad:#F28B8B; --bad-bg:#3A1A1A;
+  --alt:#F5A06B; --alt-bg:#3A2316;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.35);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font-family:var(--sans);color:var(--ink);background:var(--bg);line-height:1.55;font-size:15px;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:var(--serif);font-weight:400;line-height:1.15;margin:0 0 .4em}
+h1{font-size:clamp(30px,4.4vw,46px)} h2{font-size:clamp(24px,3vw,32px)} h3{font-size:20px}
+p{margin:0 0 .8em}
+a{color:var(--blue-deep)}
+button,input,select{font:inherit;color:inherit}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+html{scroll-padding-top:104px}
+h1,h2{text-wrap:balance}
+button,a,label.drop,.chip,summary{touch-action:manipulation}
+.i{display:inline-block;vertical-align:-3px;flex:none}
+.val,time,.fp,ol.audit,.kv dd,dl.meta dd{font-variant-numeric:tabular-nums}
+.val,.src,.fsrc{overflow-wrap:anywhere}
+.fname{overflow-wrap:normal;hyphens:manual}
+.skip{position:absolute;left:12px;top:-80px;z-index:100;background:var(--surface);color:var(--ink);border:2px solid var(--blue);border-radius:6px;padding:10px 14px;font-weight:700;cursor:pointer}
+.skip:focus{top:12px}
+.field-err{color:var(--bad);font-size:14px;font-weight:600;display:flex;gap:6px;align-items:center}
+.field-err:empty{display:none}
+input.t[aria-invalid="true"]{border-color:var(--bad);box-shadow:0 0 0 1px var(--bad)}
+.req{color:var(--muted);font-weight:400;font-size:13px}
+
+/* concept banner */
+.concept{background:var(--strip);color:#F1F1F1;font-size:12.5px;padding:7px 16px;text-align:center;letter-spacing:.01em}
+.concept b{color:#F3D98A;letter-spacing:.06em}
+
+/* header */
+.site{background:var(--gold-strong);color:#fff;position:sticky;top:0;z-index:20;box-shadow:0 2px 0 rgba(0,0,0,.05)}
+.site .in{max-width:1240px;margin:0 auto;display:flex;align-items:center;gap:18px;padding:12px 20px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:11px;margin-right:auto;text-decoration:none;color:#fff}
+.mark{width:40px;height:40px;border-radius:50%;background:var(--blue-logo);display:grid;place-items:center;box-shadow:inset 0 0 0 2px rgba(255,255,255,.6)}
+.brand b{display:block;font-size:16px;letter-spacing:.01em}
+.brand small{display:block;font-size:12px;opacity:.9;letter-spacing:.08em;text-transform:uppercase}
+.nav{display:flex;gap:4px;flex-wrap:wrap}
+.nav button{background:none;border:0;color:#fff;font-weight:700;font-size:16px;padding:9px 14px;border-radius:6px;cursor:pointer;min-height:44px;transition:background-color .15s ease}
+.nav button:focus-visible,.theme-btn:focus-visible{outline-color:#fff}
+.nav button:hover{background:rgba(0,0,0,.14)}
+.nav button[aria-current="page"]{background:rgba(0,0,0,.2);box-shadow:inset 0 -3px 0 #fff}
+.theme-btn{background:rgba(0,0,0,.16);border:1px solid rgba(255,255,255,.6);color:#fff;border-radius:999px;padding:7px 14px;min-height:40px;cursor:pointer;font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px}
+
+/* layout */
+.wrap{max-width:1240px;margin:0 auto;padding:0 20px}
+.band-sky{background:var(--sky)} .band-cream{background:var(--cream)}
+.section{padding:44px 0}
+.lead{color:var(--muted);font-size:16.5px;max-width:58ch}
+.eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-deep);font-weight:700;margin-bottom:8px}
+:root[data-theme="dark"] .eyebrow{color:var(--gold)}
+
+/* buttons: echo the "double border" button */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--blue);color:#fff;border:2px solid var(--blue);outline:2px solid #fff;outline-offset:-6px;padding:12px 26px;font-size:16px;cursor:pointer;border-radius:0;min-height:48px;font-weight:500;transition:background .15s}
+.btn:hover{background:var(--blue-hover);border-color:var(--blue-hover)}
+.btn:active:not([disabled]){filter:brightness(.92)}
+:root[data-theme="dark"] .btn{outline-color:rgba(255,255,255,.85);color:#0E1620}
+:root[data-theme="dark"] .btn.gold{color:#fff}
+.btn[disabled]{background:var(--grey-bg);border-color:var(--line);color:var(--muted);outline-color:transparent;cursor:not-allowed}
+.btn.gold{background:var(--gold-strong);border-color:var(--gold-strong);color:#fff} .btn.gold:hover{background:var(--gold-strong-hover);border-color:var(--gold-strong-hover)}
+.btn.sm{min-height:36px;padding:6px 14px;font-size:14px;outline-offset:-5px}
+.ghost{background:transparent;border:1px solid var(--line);color:var(--ink);padding:7px 12px;border-radius:6px;cursor:pointer;font-size:13.5px;font-weight:600;display:inline-flex;align-items:center;gap:6px}
+.ghost{min-height:36px;transition:background-color .15s ease,border-color .15s ease,color .15s ease}
+.ghost:hover{border-color:var(--blue);color:var(--blue-deep)}
+.ghost:active:not([disabled]){background:var(--surface-2)}
+:root[data-theme="dark"] .ghost:hover{color:var(--blue)}
+.ghost[disabled]{opacity:.45;cursor:not-allowed}
+.ghost.ok{border-color:color-mix(in srgb,var(--ok) 45%,transparent);color:var(--ok)}
+.ghost.fix{border-color:color-mix(in srgb,var(--blue) 45%,transparent);color:var(--blue-deep)}
+:root[data-theme="dark"] .ghost.fix{color:var(--blue)}
+
+/* verify hero */
+.hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:0;min-height:520px}
+.hero .left{padding:52px 48px 48px 0}
+.hero .right{padding:40px 0 40px 40px;display:flex;align-items:flex-start}
+form.verify{margin-top:22px;display:grid;gap:14px;max-width:520px}
+label.f{display:grid;gap:6px;font-size:14px;font-weight:600}
+label.f span.hint{font-weight:400;color:var(--muted);font-size:13px}
+input.t,select.t{width:100%;border:1px solid var(--field-border);background:var(--surface);border-radius:4px;padding:12px 13px;font-size:16px;min-height:48px}
+
+input.t:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px color-mix(in srgb,var(--blue) 25%,transparent)}
+input.mono{font-family:var(--mono);letter-spacing:.02em}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.drop{border:2px dashed color-mix(in srgb,var(--blue) 45%,var(--line));background:var(--surface);border-radius:8px;padding:18px;display:flex;gap:14px;align-items:center;cursor:pointer;transition:background .15s,border-color .15s}
+.drop:focus-within{outline:3px solid var(--blue);outline-offset:2px}
+.drop:hover,.drop.over{border-color:var(--blue);background:color-mix(in srgb,var(--blue) 7%,var(--surface))}
+.drop .di{width:42px;height:42px;border-radius:8px;background:var(--sky);display:grid;place-items:center;flex:none;color:var(--blue-deep)}
+.drop b{display:block;font-size:15px} .drop small{color:var(--muted);font-size:13px}
+.or{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.1em}
+.or::before,.or::after{content:"";flex:1;height:1px;background:var(--line)}
+details.more summary{cursor:pointer;color:var(--blue-deep);font-weight:600;font-size:14px}
+:root[data-theme="dark"] details.more summary{color:var(--blue)}
+details.more[open] summary{margin-bottom:10px}
+.samples{margin-top:22px}
+.samples p{font-size:13px;color:var(--muted);margin-bottom:8px}
+.chips{display:flex;flex-wrap:wrap;gap:7px}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 11px;font-size:13px;cursor:pointer;display:inline-flex;gap:6px;align-items:center}
+.chip{min-height:36px;transition:border-color .15s ease,background-color .15s ease}
+.chip:hover{border-color:var(--blue)}
+.chip:active{background:var(--surface-2)}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;flex:none}
+
+/* result card */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadow)}
+.result{width:100%}
+.empty{padding:40px 30px;text-align:center;color:var(--muted)}
+.empty svg{margin:0 auto 14px;display:block}
+.empty h2{font-size:20px}
+.status-head{padding:22px 24px;border-bottom:1px solid var(--line);display:flex;gap:16px;align-items:flex-start;border-radius:10px 10px 0 0}
+.status-icon{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;flex:none}
+.status-head h2{font-size:28px;margin:0 0 4px}
+.status-head p{margin:0;color:var(--ink);font-size:14.5px}
+.qr-note{display:inline-flex;gap:6px;align-items:center;font-size:12px;font-weight:600;color:var(--muted);margin-bottom:6px;letter-spacing:.04em;text-transform:uppercase}
+.result-body{padding:20px 24px 24px;display:grid;gap:22px}
+dl.meta{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px 18px;margin:0}
+dl.meta div{min-width:0}
+dl.meta dt{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+dl.meta dd{margin:2px 0 0;font-weight:600;overflow-wrap:anywhere}
+.subh{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:0 0 8px}
+ul.checks{list-style:none;margin:0;padding:0;display:grid;gap:7px}
+ul.checks li{display:grid;grid-template-columns:22px 1fr;gap:8px;font-size:14.5px;align-items:start}
+ul.checks li small{display:block;color:var(--muted);font-size:13px}
+.ic{width:20px;height:20px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:800;margin-top:1px}
+.ic.pass{background:var(--ok-bg);color:var(--ok)} .ic.fail{background:var(--bad-bg);color:var(--bad)}
+.ic.warn{background:var(--warn-bg);color:var(--warn)} .ic.na{background:var(--grey-bg);color:var(--grey)}
+ol.timeline{list-style:none;margin:0;padding:0 0 0 4px}
+ol.timeline li{position:relative;padding:0 0 12px 22px;font-size:14px;border-left:2px solid var(--line);margin-left:5px}
+ol.timeline li:last-child{border-left-color:transparent;padding-bottom:0}
+ol.timeline li::before{content:"";position:absolute;left:-7px;top:3px;width:12px;height:12px;border-radius:50%;background:var(--surface);border:2px solid var(--gold)}
+ol.timeline li.cur::before{background:var(--gold)}
+ol.timeline time{color:var(--muted);font-size:12.5px;display:block}
+.privacy{font-size:13px;color:var(--muted);background:var(--surface-2);border-radius:6px;padding:10px 12px;display:flex;gap:8px}
+.advice{font-size:14.5px;border-left:4px solid var(--gold);padding:8px 12px;background:var(--gold-soft);border-radius:0 6px 6px 0}
+
+/* legend */
+.legend{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:22px}
+.lg{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:16px 18px;border-top:4px solid var(--c)}
+.lg h3{font-family:var(--sans);font-size:16px;font-weight:700;display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.lg p{font-size:14px;color:var(--muted);margin:0}
+.badge{display:inline-flex;align-items:center;gap:6px;font-weight:700;font-size:12.5px;padding:3px 10px;border-radius:999px;letter-spacing:.02em;white-space:nowrap}
+
+.how{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px;margin-top:20px}
+.how .n{font-family:var(--serif);font-size:40px;color:var(--gold);line-height:1}
+.how p{color:var(--muted);font-size:14.5px}
+.tiers{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:26px}
+.tier{border:1px solid var(--line);border-radius:8px;padding:18px;background:var(--surface)}
+.tier.off{border-style:dashed;background:transparent}
+.tier h3{font-family:var(--sans);font-size:16px;font-weight:700}
+.tier p{font-size:14px;color:var(--muted);margin:0}
+
+/* staff */
+.staffbar{display:flex;gap:12px;align-items:center;flex-wrap:wrap;padding:16px 0}
+.who{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:5px 14px 5px 5px}
+.avatar{width:32px;height:32px;border-radius:50%;background:var(--gold-strong);color:#fff;display:grid;place-items:center;font-weight:700;font-size:13px}
+.who b{font-size:14px;display:block;line-height:1.2} .who small{font-size:12px;color:var(--muted)}
+.mfa{font-size:12px;font-weight:700;color:var(--ok);background:var(--ok-bg);border-radius:999px;padding:3px 9px}
+.spacer{flex:1}
+.stepper{display:flex;gap:0;overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:6px;margin-bottom:18px;scrollbar-width:thin}
+.step{flex:1 0 auto;display:flex;align-items:center;gap:8px;padding:8px 12px;font-size:13px;color:var(--muted);white-space:nowrap;border-radius:7px}
+.step .n{width:24px;height:24px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;font-size:12px;font-weight:700;flex:none}
+.step.done{color:var(--ink)} .step.done .n{background:var(--ok);border-color:var(--ok);color:#fff}
+.step.now{background:var(--sky);color:var(--ink);font-weight:700} .step.now .n{border-color:var(--blue);color:var(--blue-deep)}
+:root[data-theme="dark"] .step.now .n{color:var(--blue)}
+.step .ai{font-size:11px;font-weight:800;color:var(--gold-deep);background:var(--gold-soft);border-radius:4px;padding:1px 5px;letter-spacing:.05em}
+:root[data-theme="dark"] .step .ai{color:var(--gold)}
+.staffgrid{display:grid;grid-template-columns:260px minmax(0,1fr) 320px;gap:18px;align-items:start;padding-bottom:40px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:10px}
+.panel>header{padding:13px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:8px}
+.panel>header h2,.panel>header h3{font-family:var(--sans);font-size:14px;font-weight:700;margin:0;letter-spacing:.02em}
+.panel .pb{padding:14px 16px}
+.queue{list-style:none;margin:0;padding:6px}
+.queue button{width:100%;text-align:left;background:none;border:1px solid transparent;border-radius:8px;padding:10px;cursor:pointer;display:grid;gap:4px}
+.queue button:hover{background:var(--surface-2)}
+.queue button[aria-current="true"]{background:var(--sky);border-color:color-mix(in srgb,var(--blue) 35%,transparent)}
+.queue .no{font-family:var(--mono);font-size:12.5px;font-weight:600}
+.queue .ty{font-size:13px;color:var(--muted)}
+.sec-list{list-style:none;margin:0;padding:0;display:grid;gap:9px;font-size:13px}
+.sec-list li{display:grid;grid-template-columns:18px 1fr;gap:8px}
+.sec-list b{display:block;font-size:13px}
+.sec-list span{color:var(--muted)}
+.draft-head{padding:18px 20px;border-bottom:1px solid var(--line);display:grid;gap:10px}
+.draft-head .top{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.draft-head h2{font-size:24px;margin:0}
+.kv{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px 16px;font-size:13px}
+.kv dt{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.06em}
+.kv dd{margin:0;font-weight:600;overflow-wrap:anywhere}
+.sources{display:flex;gap:6px;flex-wrap:wrap}
+.src{font-size:12px;font-family:var(--mono);background:var(--surface-2);border:1px solid var(--line);border-radius:5px;padding:2px 7px}
+.ai-summary{margin:14px 20px 0;padding:11px 14px;border-radius:8px;font-size:14px;display:flex;gap:10px;align-items:flex-start}
+.ai-tag{font-size:11px;font-weight:800;letter-spacing:.06em;background:var(--gold-strong);color:#fff;border-radius:4px;padding:2px 6px;flex:none;margin-top:2px}
+table.fields{width:100%;border-collapse:collapse;font-size:14px}
+table.fields th{font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);text-align:left;font-weight:700;padding:12px 10px 8px;border-bottom:1px solid var(--line)}
+table.fields td{padding:11px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+table.fields th:first-child,table.fields td:first-child{padding-left:20px}
+table.fields th:last-child,table.fields td:last-child{padding-right:20px;text-align:right}
+table.fields tr.flag td{background:color-mix(in srgb,var(--warn-bg) 55%,transparent)}
+table.fields tr.flag td:first-child{box-shadow:inset 4px 0 0 var(--warn)}
+table.fields tr.override td:first-child{box-shadow:inset 4px 0 0 var(--info)}
+.fname{font-weight:600}
+.fsrc{font-size:12px;color:var(--muted);font-family:var(--mono)}
+.val{font-family:var(--mono);font-weight:600;font-size:14px}
+.val.missing{color:var(--alt);font-family:var(--sans);font-style:italic;font-weight:600}
+.was{font-size:12px;color:var(--muted);text-decoration:line-through;font-family:var(--mono)}
+.why{margin-top:7px;font-size:13px;line-height:1.45;color:var(--ink);background:var(--surface);border:1px solid color-mix(in srgb,var(--warn) 35%,transparent);border-radius:6px;padding:8px 10px;max-width:56ch}
+.why b{color:var(--warn)}
+.why.info{border-color:color-mix(in srgb,var(--info) 35%,transparent)} .why.info b{color:var(--info)}
+.acts{display:inline-flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.fixbox{display:flex;gap:6px;margin-top:8px;justify-content:flex-end;flex-wrap:wrap}
+.fixbox input{border:1px solid var(--field-border);border-radius:5px;padding:6px 8px;font-family:var(--mono);font-size:13.5px;width:170px;background:var(--surface)}
+.st{font-size:12px;font-weight:700;padding:2px 8px;border-radius:999px;white-space:nowrap;display:inline-block}
+.st.pend{background:var(--grey-bg);color:var(--grey)} .st.ok{background:var(--ok-bg);color:var(--ok)}
+.st.flag{background:var(--warn-bg);color:var(--warn)} .st.ovr{background:var(--info-bg);color:var(--info)}
+.tbl-foot{display:flex;gap:10px;align-items:center;padding:12px 20px;flex-wrap:wrap;border-bottom:1px solid var(--line)}
+.tbl-foot .muted{font-size:13px;color:var(--muted)}
+.approve{padding:18px 20px;display:grid;gap:14px}
+.gate{list-style:none;margin:0;padding:0;display:grid;gap:7px;font-size:14px}
+.gate li{display:grid;grid-template-columns:22px 1fr;gap:8px;align-items:start}
+.classify{border-radius:8px;padding:12px 14px;font-size:14px;display:grid;gap:4px}
+.classify b{font-size:15px}
+.attest{display:flex;gap:9px;align-items:flex-start;font-size:14px}
+.attest input{width:18px;height:18px;margin-top:2px;accent-color:var(--blue)}
+.approve-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.issued{display:grid;grid-template-columns:auto 1fr;gap:20px;padding:20px;align-items:center;border-top:1px solid var(--line);background:var(--sky);border-radius:0 0 10px 10px}
+.qrbox{background:#fff;padding:8px;border-radius:6px;border:1px solid var(--line);line-height:0;cursor:pointer;font:inherit}
+.qrbox:hover{border-color:var(--blue)}
+.qrbox svg{width:156px;height:156px;display:block}
+.fp{font-family:var(--mono);font-size:13px;letter-spacing:.03em;font-weight:600}
+.issued .next{font-size:13px;color:var(--muted)}
+ol.audit{list-style:none;margin:0;padding:6px 0;max-height:640px;overflow:auto}
+ol.audit li{padding:9px 16px;border-bottom:1px solid var(--line);font-size:13px;display:grid;gap:2px}
+ol.audit li:last-child{border-bottom:0}
+ol.audit .a-top{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+ol.audit time{font-family:var(--mono);font-size:12px;color:var(--muted)}
+ol.audit .actor{font-weight:700}
+ol.audit .hash{font-family:var(--mono);font-size:12px;color:var(--muted)}
+ol.audit li.alert{background:var(--alt-bg)}
+ol.audit li.alert .actor{color:var(--alt)}
+.kind{font-size:11px;font-weight:800;letter-spacing:.05em;border-radius:4px;padding:1px 5px;text-transform:uppercase}
+.k-ai{background:var(--gold-soft);color:var(--gold-deep)} :root[data-theme="dark"] .k-ai{color:var(--gold)}
+.k-user{background:var(--info-bg);color:var(--info)} .k-sys{background:var(--grey-bg);color:var(--grey)}
+.k-sec{background:var(--ok-bg);color:var(--ok)} .k-alert{background:var(--alt);color:#fff}
+
+/* modal & toast */
+.modal{position:fixed;inset:0;background:rgba(10,14,20,.55);display:none;place-items:center;z-index:50;padding:16px}
+.modal.open{display:grid;animation:fadeIn .18s ease-out}
+.modal.open .box{animation:popIn .22s cubic-bezier(.2,.8,.2,1)}
+@keyframes fadeIn{from{opacity:0}} @keyframes popIn{from{opacity:0;transform:translateY(8px) scale(.98)}}
+.modal .box{background:var(--surface);border-radius:12px;max-width:400px;width:100%;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.modal h2,.modal h3{font-size:22px}
+.modal p{color:var(--muted);font-size:14px}
+.otp{font-family:var(--mono);font-size:24px;letter-spacing:.35em;text-align:center}
+.modal .acts{justify-content:flex-end;margin-top:14px;display:flex}
+.err{color:var(--bad);font-size:13px;min-height:18px;margin-top:6px}
+/* source document viewer */
+.modal .box.wide{max-width:1040px;padding:0;overflow:hidden;display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);max-height:calc(100vh - 32px)}
+.docpane{background:var(--surface-2);padding:18px;overflow:auto;border-right:1px solid var(--line)}
+.docbar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.docbar button{font-family:var(--mono);font-size:12px;border:1px solid var(--line);background:var(--surface);border-radius:6px;padding:5px 9px;cursor:pointer;color:var(--ink)}
+.docbar button[aria-pressed="true"]{border-color:var(--blue);background:var(--sky);font-weight:700}
+.paper{background:#FFFDF6;color:#1F2A44;border-radius:4px;box-shadow:0 1px 3px rgba(0,0,0,.18),0 8px 24px rgba(0,0,0,.08);padding:40px 28px 30px;position:relative;min-height:360px;
+  background-image:repeating-linear-gradient(transparent 0 33px,rgba(91,155,213,.18) 33px 34px);background-position:0 58px}
+.paper .dk{position:absolute;top:10px;right:12px;font:600 10px/1 var(--sans);letter-spacing:.08em;text-transform:uppercase;color:#8a8f99;background:#EEF0F3;border-radius:4px;padding:4px 6px}
+.paper .ln{min-height:34px;line-height:34px;white-space:pre-wrap;overflow-wrap:anywhere}
+.paper.hand{font-family:"Segoe Print","Bradley Hand","Comic Sans MS","Chalkboard SE",cursive;font-size:17px}
+.paper.hand .ln:nth-child(odd){transform:rotate(-.25deg)} .paper.hand .ln.h{font-family:var(--sans);font-weight:800;font-size:14px;letter-spacing:.06em;color:#333}
+.paper.csv{font-family:var(--mono);font-size:13.5px;background-image:none;background:#FCFCFA}
+.paper.csv .ln{line-height:26px;min-height:26px}
+.paper.mail{font-family:var(--sans);font-size:14.5px;background-image:none;background:#fff}
+.paper.mail .ln{line-height:26px;min-height:26px}
+.paper mark{background:rgba(242,201,76,.38);color:inherit;border-radius:3px;padding:0 3px;cursor:pointer}
+.paper mark:focus-visible{outline:3px solid #286FE4;outline-offset:2px}
+.paper mark.blank{background:rgba(180,65,12,.12);outline:1px dashed #B4410C;color:#B4410C;font-family:var(--sans);font-size:12px;font-weight:700}
+.paper mark.target{background:rgba(74,134,232,.22);outline:2px solid #4A86E8;outline-offset:1px}
+.paper .smudge{filter:blur(.6px);opacity:.85}
+.docside{padding:20px 20px 18px;overflow:auto;display:grid;gap:14px;align-content:start}
+.docside .top{display:flex;align-items:center;gap:8px}
+.docside h2,.docside h3{font-family:var(--sans);font-weight:700;font-size:18px;margin:0}
+.cmp{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.cmp div{border:1px solid var(--line);border-radius:8px;padding:10px 12px}
+.cmp small{display:block;font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-bottom:3px}
+.ro-note{font-size:13.5px;background:var(--info-bg);color:var(--ink);border-radius:8px;padding:10px 12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.docacts{display:flex;gap:8px;flex-wrap:wrap}
+.docacts input{flex:1 1 160px;border:1px solid var(--field-border);border-radius:6px;padding:8px 10px;font-family:var(--mono);font-size:14px;background:var(--surface);min-width:0}
+.fieldnav{display:flex;justify-content:space-between;gap:8px;border-top:1px solid var(--line);padding-top:12px}
+.linkbtn{background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;text-underline-offset:2px;cursor:pointer}
+.xbtn{margin-left:auto;background:none;border:0;line-height:0;cursor:pointer;color:var(--muted);min-width:40px;min-height:40px;display:grid;place-items:center;border-radius:8px}
+.xbtn:hover{background:var(--surface-2);color:var(--ink)}
+@media (max-width:860px){ .modal .box.wide{grid-template-columns:minmax(0,1fr);max-height:calc(100vh - 20px);overflow:auto} .docpane{border-right:0;border-bottom:1px solid var(--line);overflow:visible} .docside{overflow:visible} }
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(20px);background:var(--strip);color:#fff;padding:11px 16px;border-radius:8px;font-size:14px;opacity:0;transition:.25s;z-index:60;max-width:min(560px,92vw);pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.alert{background:var(--alt)}
+footer.site-foot{background:var(--strip);color:#C9CBD0;font-size:13px;padding:22px 0}
+footer.site-foot .wrap{display:flex;gap:16px;flex-wrap:wrap;justify-content:space-between}
+[hidden]{display:none!important}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spin{width:18px;height:18px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:spin .7s linear infinite;display:inline-block}
+
+@media (max-width:1100px){
+  .staffgrid{grid-template-columns:minmax(0,1fr)}
+  .staffgrid .col-left{display:contents!important}
+  .staffgrid .q-panel{order:1} .staffgrid #draft{order:2} .staffgrid .a-panel{order:3} .staffgrid .s-panel{order:4}
+  ol.audit{max-height:380px}
+}
+@media (max-width:860px){
+  .hero{grid-template-columns:minmax(0,1fr);min-height:0}
+  .hero .left{padding:34px 0 10px}
+  .hero .right{padding:10px 0 36px}
+  .legend,.how{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+  .kv{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:640px){
+  body{font-size:14.5px}
+  .site .in{padding:10px 14px;gap:10px}
+  .brand small{display:none}
+  .nav{order:3;width:100%}
+  .nav button{flex:1;font-size:14.5px;padding:8px}
+  .wrap{padding:0 14px}
+  .row2,.legend,.how,.tiers{grid-template-columns:minmax(0,1fr)}
+  dl.meta{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .status-head{padding:18px}
+  .result-body{padding:16px 18px 20px}
+  .issued{grid-template-columns:minmax(0,1fr);justify-items:start}
+  table.fields thead{display:none}
+  table.fields,table.fields tbody,table.fields tr,table.fields td{display:block;width:100%}
+  table.fields tr{border-bottom:1px solid var(--line);padding:10px 14px}
+  table.fields td{border:0;padding:3px 0!important;text-align:left!important}
+  table.fields tr.flag{background:color-mix(in srgb,var(--warn-bg) 55%,transparent);box-shadow:inset 4px 0 0 var(--warn)}
+  table.fields tr.flag td{background:none}
+  table.fields tr.flag td:first-child,table.fields tr.override td:first-child{box-shadow:none}
+  table.fields tr.override{box-shadow:inset 4px 0 0 var(--info)}
+  .acts,.fixbox{justify-content:flex-start}
+  .draft-head,.approve{padding:16px}
+  .ai-summary{margin:12px 14px 0}
+}
+@media (pointer:coarse){
+  .ghost,.chip,.docbar button,.theme-btn,.btn.sm,.xbtn,.queue button{min-height:44px}
+  .xbtn{min-width:44px}
+  .brand{min-height:44px}
+  details.more summary{padding:11px 0}
+  #roleSel{min-height:44px!important}
+  .fixbox input,.docacts input{min-height:44px;font-size:16px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+/* ===== v3 additions (same palette and tokens) ===== */
+.nav button{display:inline-flex;align-items:center;gap:7px}
+.wrap.pad{padding-top:28px;padding-bottom:48px}
+.page-head{padding:34px 0 22px}
+.page-head .lead{margin:0}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.field-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.hint{color:var(--muted);font-size:13px;font-weight:400}
+.muted{color:var(--muted)}
+.small{font-size:13px}
+.scan-cta{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-top:22px}
+.scan-cta .btn{min-height:52px}
+.status-chip{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;font-weight:700;padding:3px 10px;border-radius:999px;white-space:nowrap}
+.mismatch{border:2px solid var(--alt);background:var(--alt-bg);border-radius:8px;padding:12px 14px;display:flex;gap:10px;align-items:flex-start;font-size:14.5px}
+.mismatch b{color:var(--alt)}
+.compare-note{font-size:14px;background:var(--sky);border-radius:8px;padding:10px 12px;display:flex;gap:10px;align-items:flex-start}
+.reg-note{font-size:13px;color:var(--muted);display:flex;gap:8px;align-items:flex-start}
+.printed{display:flex;gap:16px;align-items:center;background:#fff;color:#1E2430;border:1px solid var(--line);border-radius:8px;padding:14px;max-width:520px;margin-top:16px}
+.printed svg.qrimg{width:88px;height:88px;flex:none}
+.printed .t{font-size:13.5px;line-height:1.5}
+.printed .t b{display:block;font-size:14px}
+.stage-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:20px}
+.stage{border:1px solid var(--line);border-radius:8px;padding:16px;background:var(--surface)}
+.stage.now{border-color:var(--gold);box-shadow:inset 0 3px 0 var(--gold)}
+.stage h3{font-family:var(--sans);font-size:15px;font-weight:700;margin:6px 0}
+.stage p{font-size:14px;color:var(--muted);margin:0}
+
+/* sub navigation (staff tabs) */
+.subnav{display:flex;flex-wrap:wrap;gap:6px;padding:0 0 16px}
+.subnav button{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:8px 14px;min-height:40px;font-weight:600;font-size:14px;cursor:pointer;display:inline-flex;gap:7px;align-items:center;transition:background-color .15s ease,border-color .15s ease}
+.subnav button:hover{border-color:var(--blue)}
+.subnav button[aria-current="page"]{background:var(--gold-strong);border-color:var(--gold-strong);color:#fff}
+.subnav .count{background:var(--bad);color:#fff;border-radius:999px;font-size:11px;font-weight:800;padding:1px 6px;min-width:18px;text-align:center}
+.subnav button[aria-current="page"] .count{background:#fff;color:var(--gold-strong)}
+
+/* generic data table */
+table.data{width:100%;border-collapse:collapse;font-size:14px}
+table.data th{font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);text-align:left;font-weight:700;padding:10px 12px;border-bottom:1px solid var(--line)}
+table.data td{padding:11px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+table.data tr:last-child td{border-bottom:0}
+table.data td.num,table.data th.num{text-align:right;font-variant-numeric:tabular-nums}
+.tbl-wrap{overflow-x:auto}
+
+/* KPIs and bar chart */
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:18px}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+.kpi .k{font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);font-weight:700}
+.kpi .v{font-size:28px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.2;margin-top:4px}
+.kpi .s{font-size:13px;color:var(--muted)}
+.meter{height:8px;border-radius:999px;background:var(--grey-bg);position:relative;margin-top:8px;overflow:visible}
+.meter>span{position:absolute;inset:0 auto 0 0;border-radius:999px;background:var(--gold-strong)}
+.meter>i{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--ink)}
+.bars{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.bars li{display:grid;grid-template-columns:150px minmax(0,1fr) 44px;gap:10px;align-items:center;font-size:14px}
+.bars .track{height:14px;background:var(--surface-2);border-radius:4px;overflow:hidden}
+.bars .track{display:block}
+.bars .fill{display:block;height:100%;border-radius:4px}
+.bars .n{text-align:right;font-variant-numeric:tabular-nums;font-weight:700}
+.two-col{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px}
+.stack{display:grid;gap:18px}
+
+/* notifications */
+.notif-wrap{position:relative}
+.bell{position:relative}
+.bell .dotn{position:absolute;top:-6px;right:-6px;background:var(--bad);color:#fff;border-radius:999px;font-size:11px;font-weight:800;min-width:18px;height:18px;display:grid;place-items:center;padding:0 5px}
+.notif-panel{position:absolute;right:0;top:calc(100% + 8px);width:min(360px,90vw);background:var(--surface);border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadow);z-index:30;padding:6px}
+.notif-panel ul{list-style:none;margin:0;padding:0}
+.notif-panel li{padding:10px 12px;border-radius:8px;font-size:14px;display:grid;grid-template-columns:20px 1fr;gap:8px}
+.notif-panel li+li{border-top:1px solid var(--line)}
+.notif-panel li button{all:unset;cursor:pointer;color:var(--blue-deep);font-weight:600;text-decoration:underline;text-underline-offset:2px}
+.notif-panel h2{font-family:var(--sans);font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin:6px 12px 4px}
+
+/* confidence */
+.conf{font-size:12px;color:var(--muted);display:inline-flex;align-items:center;gap:6px;margin-top:4px}
+.conf .mini{width:44px;height:5px;border-radius:999px;background:var(--grey-bg);overflow:hidden;display:inline-block}
+.conf .mini>span{display:block;height:100%;background:var(--ok)}
+.conf.low .mini>span{background:var(--warn)}
+
+/* scan form progress */
+ol.progress{list-style:none;margin:14px 0 0;padding:0;display:grid;gap:8px}
+ol.progress li{display:grid;grid-template-columns:22px 1fr;gap:8px;font-size:14px;align-items:center;color:var(--muted)}
+ol.progress li.done{color:var(--ink)} ol.progress li.now{color:var(--ink);font-weight:600}
+.preview-img{max-width:100%;max-height:220px;border-radius:8px;border:1px solid var(--line);display:block;margin-top:10px}
+
+/* client */
+.signin{max-width:440px;margin:0 auto;padding:28px}
+.pw{position:relative}
+.pw input{padding-right:84px}
+.pw button{position:absolute;right:6px;top:50%;transform:translateY(-50%)}
+.detail-grid{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:20px;align-items:start}
+.qr-tile{background:#fff;border:1px solid var(--line);border-radius:8px;padding:8px;line-height:0}
+.qr-tile svg{width:132px;height:132px}
+
+/* help desk */
+.help-fab{position:fixed;right:20px;bottom:20px;z-index:40;background:var(--gold-strong);color:#fff;border:0;border-radius:999px;padding:12px 18px;min-height:48px;font-weight:700;font-size:15px;display:inline-flex;gap:8px;align-items:center;cursor:pointer;box-shadow:0 6px 20px rgba(0,0,0,.22)}
+.help-fab:hover{background:var(--gold-strong-hover)}
+.help-fab:focus-visible{outline:3px solid var(--blue);outline-offset:3px}
+.helpdesk{position:fixed;right:20px;bottom:20px;z-index:45;width:min(400px,calc(100vw - 24px));height:min(600px,calc(100dvh - 40px));background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:0 20px 60px rgba(0,0,0,.3);display:none;flex-direction:column;overflow:hidden}
+.helpdesk.open{display:flex;animation:popIn .22s cubic-bezier(.2,.8,.2,1)}
+.helpdesk header{background:var(--gold-strong);color:#fff;padding:12px 12px 12px 16px;display:flex;align-items:center;gap:10px}
+.helpdesk header h2{font-family:var(--sans);font-size:16px;font-weight:700;margin:0}
+.helpdesk header small{display:block;font-size:12px;opacity:.95}
+.helpdesk header .xbtn{color:#fff}
+.helpdesk header .xbtn:hover{background:rgba(0,0,0,.18);color:#fff}
+.chat{flex:1;overflow:auto;padding:14px;display:flex;flex-direction:column;gap:10px;background:var(--surface-2)}
+.msg{max-width:88%;padding:10px 12px;border-radius:12px;font-size:14.5px;line-height:1.5}
+.msg.bot{background:var(--surface);border:1px solid var(--line);align-self:flex-start;border-bottom-left-radius:4px}
+.msg.me{background:var(--blue);color:#fff;align-self:flex-end;border-bottom-right-radius:4px}
+:root[data-theme="dark"] .msg.me{color:#0E1620}
+.msg .links{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.msg ul{margin:6px 0 0;padding-left:18px}
+.suggest{display:flex;flex-wrap:wrap;gap:6px;padding:10px 14px 0}
+.chat-form{display:flex;gap:8px;padding:10px 14px 14px;border-top:1px solid var(--line)}
+.chat-form input{flex:1;min-width:0;border:1px solid var(--field-border);border-radius:8px;padding:10px 12px;font-size:16px;background:var(--surface);min-height:44px}
+.chat-form .btn{min-height:44px;padding:8px 16px}
+
+/* scanner */
+.scanbox{max-width:480px}
+.scanbox video{width:100%;border-radius:8px;background:#000;aspect-ratio:1/1;object-fit:cover}
+.scan-frame{position:relative}
+.scan-frame::after{content:"";position:absolute;inset:18%;border:3px solid rgba(255,255,255,.9);border-radius:12px;box-shadow:0 0 0 999px rgba(0,0,0,.25)}
+
+.empty-state{text-align:center;padding:36px 20px;color:var(--muted)}
+.empty-state svg{margin:0 auto 10px;display:block}
+.tag-ai{font-size:11px;font-weight:800;letter-spacing:.05em;background:var(--gold-soft);color:var(--gold-deep);border-radius:4px;padding:1px 6px}
+.tpl{border:1px solid var(--line);border-radius:8px;padding:14px 16px;background:var(--surface);display:grid;gap:8px}
+.tpl h3{font-family:var(--sans);font-size:15px;font-weight:700;margin:0}
+.tpl ol{margin:0;padding-left:20px;font-size:14px}
+.rule-tbl td:nth-child(3),.rule-tbl td:nth-child(4){font-variant-numeric:tabular-nums}
+
+@media (max-width:1100px){ .kpis{grid-template-columns:repeat(2,minmax(0,1fr))} .stage-list{grid-template-columns:minmax(0,1fr)} }
+@media (max-width:860px){ .two-col{grid-template-columns:minmax(0,1fr)} .detail-grid{grid-template-columns:minmax(0,1fr)} }
+@media (max-width:640px){
+  .field-grid{grid-template-columns:minmax(0,1fr)}
+  .kpis{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+  .bars li{grid-template-columns:96px minmax(0,1fr) 36px}
+  .nav button{font-size:14px;padding:8px 6px;gap:5px}
+  .nav button .i{display:none}
+  .help-fab{right:12px;bottom:12px}
+  .helpdesk{right:8px;bottom:8px;width:calc(100vw - 16px);height:calc(100dvh - 16px)}
+  table.data.stackable thead{display:none}
+  table.data.stackable,table.data.stackable tbody,table.data.stackable tr,table.data.stackable td{display:block;width:100%}
+  table.data.stackable tr{border-bottom:1px solid var(--line);padding:10px 4px}
+  table.data.stackable td{border:0;padding:3px 8px}
+  table.data.stackable td[data-l]::before{content:attr(data-l) ": ";font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;font-weight:700}
+}
+@media (pointer:coarse){ .subnav button{min-height:44px} }
+footer.site-foot{padding-bottom:84px}
+table.data .val{white-space:nowrap;overflow-wrap:normal}
+.cmp .conf{border:0;padding:0;margin-top:6px}
+.subnav .count,.bell .dotn{color:var(--surface)}
+.kind.k-alert,.sec-list .kind.k-alert,.notif-panel .kind.k-alert{background:var(--bad);color:var(--surface)}
+.sec-list .kind.k-sys{color:var(--grey)}
+h1[tabindex="-1"]:focus,main:focus{outline:none}
+textarea.t{width:100%;border:1px solid var(--field-border);background:var(--surface);border-radius:4px;padding:12px 13px;font-size:16px;color:var(--ink)}
+textarea.t:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px color-mix(in srgb,var(--blue) 25%,transparent)}
+
+/* login + user box */
+.userbox{display:flex;align-items:center;gap:12px}
+.ub-text{color:#fff;text-align:right;line-height:1.25}
+.ub-text b{display:block;font-size:15px}
+.ub-text small{display:block;font-size:12px;opacity:.95}
+.login-band{min-height:calc(100dvh - 160px);display:grid;align-items:center;padding:48px 0}
+.login-card{max-width:440px;margin:0 auto;padding:30px 28px}
+.login-card h1{font-size:36px}
+@media (max-width:640px){ .ub-text small{display:none} .login-card{padding:24px 18px} .login-card h1{font-size:30px} }
+@media (max-width:640px){ .who .mfa{display:none} }
+</style>
+</head>
+<body>
+<button class="skip" type="button" id="skipBtn">Skip to main content</button>
+<div class="concept" role="note"><b>CONCEPT PROTOTYPE</b> &nbsp;·&nbsp; ISA/MIS 405 student project (AUS) for the AHSL case study. Not an official AHSL website or service. All reports, people and results are fictional (<span style="font-family:var(--mono)">DEMO-</span> numbers).</div>
+
+<header class="site">
+  <div class="in">
+    <a class="brand" href="#home" aria-label="Report Verification Portal, concept home">
+      <span class="mark" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5 4.5 5.5v6c0 4.6 3.1 8.4 7.5 10 4.4-1.6 7.5-5.4 7.5-10v-6z"/><path d="m8.5 12 2.4 2.4 4.6-4.8"/></svg></span>
+      <span><b>Report Verification Portal</b><small>Lab portal · concept</small></span>
+    </a>
+    <div class="userbox" id="userBox" hidden>
+      <span class="ub-text"><b id="ubName"></b><small id="ubRole"></small></span>
+      <button class="theme-btn" type="button" id="signOutBtn"><span data-icon="logout" data-size="16"></span> Sign out</button>
+    </div>
+    <button class="theme-btn" id="themeBtn" type="button" aria-label="Dark theme" aria-pressed="false"><span id="themeIcon"></span><span id="themeLbl">Dark</span></button>
+  </div>
+</header>
+
+<main id="main" tabindex="-1">
+<!-- ================= LOGIN ================= -->
+<section id="view-login" aria-labelledby="loginH1" hidden>
+  <div class="band-sky login-band">
+    <div class="wrap">
+      <div class="card login-card">
+        <div class="eyebrow">AHSL report portal · concept</div>
+        <h1 tabindex="-1" id="loginH1">Sign in</h1>
+        <p class="muted" style="margin-top:0">For regulators and AHSL staff. Your account decides what you see.</p>
+        <div class="compare-note" id="pendingNote" hidden><span data-icon="qr" data-size="16"></span><span>Sign in to see the result of the QR code you scanned.</span></div>
+        <form id="loginForm" novalidate style="display:grid;gap:14px;margin-top:14px">
+          <div>
+            <label for="loginUser" style="font-size:14px;font-weight:600;display:block;margin-bottom:6px">Username</label>
+            <select class="t" id="loginUser" aria-describedby="loginErr"></select>
+          </div>
+          <div>
+            <label for="loginPw" style="font-size:14px;font-weight:600;display:block;margin-bottom:6px">Password</label>
+            <div class="pw"><input class="t" id="loginPw" type="password" autocomplete="current-password" value="demo-password"><button type="button" class="ghost" id="loginPwToggle" aria-pressed="false">Show</button></div>
+            <div class="hint" style="margin-top:6px">Prototype: pick any user; any password works.</div>
+          </div>
+          <div class="field-err" id="loginErr" role="alert"></div>
+          <button class="btn" type="submit">Sign in</button>
+          <p class="hint" style="margin:0">Approving, amending or revoking a report asks for an MFA code as well.</p>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PUBLIC VERIFY ================= -->
+<section id="view-verify" aria-labelledby="verifyH1">
+  <div class="band-sky">
+    <div class="wrap hero">
+      <div class="left">
+        <button class="ghost" type="button" id="backWs" hidden style="margin-bottom:16px"><span data-icon="arrowback" data-size="16"></span> Back to my workspace</button>
+        <div class="eyebrow">Verification · for regulators and AHSL</div>
+        <h1 tabindex="-1" id="verifyH1">Verify a test report</h1>
+        <p class="lead">Scan the QR code on the report with this portal's scanner, upload the report PDF, or type the report number. The portal checks AHSL's signature, recalculates the report's fingerprint and looks up its current status.</p>
+        <div class="scan-cta">
+          <button class="btn" type="button" id="scanBtn"><span data-icon="camera" data-size="16"></span> Scan QR code</button>
+          <span class="hint">Opens your camera. Nothing is stored except the check result.</span>
+        </div>
+        <label class="drop" id="drop" for="fileIn" style="margin-top:18px">
+          <span class="di" aria-hidden="true"><span data-icon="upload" data-size="16"></span></span>
+          <span><b>Upload report PDFs</b><small id="dropHint">Drag one or more PDFs here, or click to choose. Each file's fingerprint is computed in your browser; files are never uploaded or stored.</small></span>
+          <input type="file" id="fileIn" accept=".pdf,application/pdf" multiple class="sr">
+        </label>
+        <div class="or" style="margin-top:22px">or enter the report number</div>
+        <form class="verify" id="verifyForm" novalidate style="margin-top:14px">
+          <div>
+            <label for="qNo" style="font-size:14px;font-weight:600;display:block;margin-bottom:6px">Report number <span class="req">(required)</span></label>
+            <input class="t mono" id="qNo" name="no" autocomplete="off" spellcheck="false" placeholder="e.g. DEMO-CIV-26-01873" required aria-required="true" aria-describedby="noHint noErr">
+            <div class="hint" id="noHint" style="margin-top:6px">To check a specific revision, add it after a slash, e.g. DEMO-GEO-26-00932/R0.</div>
+            <div class="field-err" id="noErr" role="alert" style="margin-top:6px"></div>
+          </div>
+          <details class="more">
+            <summary>Check the details printed on my copy (optional)</summary>
+            <div class="field-grid">
+              <label class="f" for="qDate">Issue date on your copy<input class="t" type="date" id="qDate"></label>
+              <label class="f" for="qProj">Project name on your copy<input class="t" id="qProj" autocomplete="off"></label>
+            </div>
+          </details>
+          <div><button class="btn" type="submit" id="verifyBtn">Verify report</button></div>
+        </form>
+        <div class="samples">
+          <p>Try a fictional sample (each one simulates a QR scan):</p>
+          <div class="chips" id="sampleChips"></div>
+        </div>
+      </div>
+      <div class="right">
+        <div class="card result" id="result" aria-live="polite">
+          <div class="empty">
+            <svg width="84" height="84" viewBox="0 0 84 84" aria-hidden="true"><rect x="6" y="6" width="72" height="72" rx="10" fill="none" stroke="var(--gold)" stroke-width="2" stroke-dasharray="5 5"/><g fill="var(--blue-logo)"><rect x="18" y="18" width="16" height="16"/><rect x="50" y="18" width="16" height="16"/><rect x="18" y="50" width="16" height="16"/><rect x="40" y="40" width="6" height="6"/><rect x="52" y="50" width="6" height="6"/><rect x="60" y="58" width="6" height="8"/><rect x="44" y="58" width="6" height="8"/></g></svg>
+            <h2>No report checked yet</h2>
+            <p>The result shows the report number, report type, issue date, revision and status. It never shows test results or client data.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap section" id="batch">
+    <div class="eyebrow">Several reports</div>
+    <h2>Check a whole submission</h2>
+    <p class="lead">Paste the report numbers from an application, or upload all its PDFs at once using “Upload report PDFs” above. Each check is logged like a single one.</p>
+    <div id="regPane" style="margin-top:18px"></div>
+  </div>
+
+  <div class="band-cream">
+    <div class="wrap section">
+      <div class="eyebrow">What the result means</div>
+      <h2>The six report statuses</h2>
+      <p class="lead">Every check returns one of these. Amendments never overwrite a report: a corrected report gets a new revision with its own fingerprint and QR code, and the old revision shows as Amended.</p>
+      <div class="legend" id="legend"></div>
+    </div>
+  </div>
+
+  <div class="wrap section">
+    <div class="eyebrow">How it works</div>
+    <h2>From approval to verification</h2>
+    <div class="how">
+      <div><div class="n">1</div><h3>Approved with MFA</h3><p>Routine reports go to normal approval; flagged reports go to expert review. Either way, the Head of Department or Lab Manager approves with multi-factor authentication. The AI never approves.</p></div>
+      <div><div class="n">2</div><h3>Fingerprinted and signed</h3><p>The report's key data goes through SHA-256 to make a unique fingerprint, which is signed with AHSL's private key, locked in a hardware security module. The QR code carries the signature and the report reference.</p></div>
+      <div><div class="n">3</div><h3>Checked on the portal</h3><p>The portal checks the signature with AHSL's public key, recalculates the fingerprint, compares it with the stored record and looks up the current status.</p></div>
+    </div>
+    <h3 style="margin-top:34px">Where the records live</h3>
+    <div class="stage-list">
+      <div class="stage now"><span class="badge" style="background:var(--ok-bg);color:var(--ok)">Until mid-2029</span><h3>Report registry (standard database)</h3><p>Fingerprint, status, revision and signature reference for every report. Used in this prototype.</p></div>
+      <div class="stage"><span class="badge" style="background:var(--grey-bg);color:var(--grey)">Always in LIMS</span><h3>Full report and confidential data</h3><p>Test results and client data stay inside AHSL's LIMS. Only the fingerprint and a few basic details are stored for verification.</p></div>
+      <div class="stage"><span class="badge" style="background:var(--grey-bg);color:var(--grey)">From mid-2029</span><h3>Permissioned blockchain</h3><p>Nothing can be deleted and every change is added as a new entry. Past records move onto it and QR codes stay exactly the same.</p></div>
+    </div>
+    <h3 style="margin-top:34px">What you'll see on a report</h3>
+    <div class="printed" id="printedSample"></div>
+  </div>
+</section>
+
+<!-- ================= STAFF ================= -->
+<section id="view-staff" aria-labelledby="staffH1" hidden>
+  <div class="band-sky">
+    <div class="wrap">
+      <h1 class="sr" tabindex="-1" id="staffH1">Staff workspace</h1>
+      <div class="staffbar">
+        <div class="who">
+          <span class="avatar" id="whoAvatar">RD</span>
+          <span><b id="whoName">R. Demo</b><small id="whoRole">Data Entry Officer</small></span>
+          <span class="mfa"><span data-icon="shield" data-size="14"></span> Signed in via IAM</span>
+        </div>
+        <span class="spacer"></span>
+        <div class="notif-wrap">
+          <button class="ghost bell" type="button" id="bellBtn" aria-expanded="false" aria-controls="notifPanel"><span data-icon="bell" data-size="16"></span> Notifications<span class="dotn" id="bellCount" hidden></span></button>
+          <div class="notif-panel" id="notifPanel" hidden></div>
+        </div>
+        <button class="ghost" type="button" id="resetBtn"><span data-icon="rotate" data-size="16"></span> Reset demo</button>
+      </div>
+      <nav class="subnav" id="subnav" aria-label="Staff sections"></nav>
+    </div>
+  </div>
+  <div class="wrap" style="padding-top:18px;padding-bottom:40px" id="staffPane"></div>
+</section>
+</main>
+
+<footer class="site-foot">
+  <div class="wrap">
+    <span>Concept prototype for ISA/MIS 405-01 Information Systems Strategy, American University of Sharjah. Group: Tala Alghunaim, Nouran Ahmed, Hala Helal, Mayan Ali, Mohammed Abaan Jaffar.</span>
+    <span>No real data. Runs offline; no network calls.</span>
+  </div>
+</footer>
+
+<button class="help-fab" type="button" id="helpFab" aria-controls="helpdesk" aria-expanded="false" hidden><span data-icon="chat" data-size="16"></span> Help</button>
+<aside class="helpdesk" id="helpdesk" aria-labelledby="hdTitle" role="dialog" aria-modal="false">
+  <header>
+    <span aria-hidden="true"><span data-icon="chat" data-size="16"></span></span>
+    <div><h2 id="hdTitle">Help desk agent</h2><small>Simulated AI assistant · works offline</small></div>
+    <button class="xbtn" type="button" id="hdClose" aria-label="Close help desk" style="margin-left:auto"><span data-icon="x" data-size="20"></span></button>
+  </header>
+  <div class="chat" id="chat" aria-live="polite"></div>
+  <div class="suggest" id="hdSuggest"></div>
+  <form class="chat-form" id="hdForm">
+    <label class="sr" for="hdInput">Ask the help desk</label>
+    <input id="hdInput" autocomplete="off" placeholder="Ask, e.g. where do I find my reports?">
+    <button class="btn sm" type="submit">Send</button>
+  </form>
+</aside>
+
+<div class="modal" id="docModal" role="dialog" aria-modal="true" aria-labelledby="docTitle">
+  <div class="box wide">
+    <div class="docpane"><div class="docbar" id="docTabs" aria-label="Source documents"></div><div id="docPaper"></div></div>
+    <div class="docside" id="docSide"></div>
+  </div>
+</div>
+<div class="modal" id="scanModal" role="dialog" aria-modal="true" aria-labelledby="scanTitle">
+  <div class="box scanbox">
+    <div style="display:flex;align-items:center;gap:8px"><h2 id="scanTitle" style="margin:0">Scan the QR code</h2><button class="xbtn" type="button" id="scanClose" aria-label="Close scanner"><span data-icon="x" data-size="20"></span></button></div>
+    <div id="scanBody" style="margin-top:12px"></div>
+  </div>
+</div>
+<div class="modal" id="formModal" role="dialog" aria-modal="true" aria-labelledby="formTitle">
+  <div class="box" style="max-width:480px">
+    <h2 id="formTitle"></h2>
+    <div id="formBody"></div>
+  </div>
+</div>
+<div class="modal" id="mfaModal" role="dialog" aria-modal="true" aria-labelledby="mfaTitle">
+  <div class="box">
+    <h2 id="mfaTitle">Confirm it's you</h2>
+    <p id="mfaText"></p>
+    <label class="sr" for="otp">6-digit code</label>
+    <input class="t otp" id="otp" inputmode="numeric" maxlength="6" autocomplete="one-time-code">
+    <div class="err" id="otpErr" role="alert"></div>
+    <div class="acts" style="gap:8px"><button class="ghost" type="button" id="otpCancel">Cancel</button><button class="btn sm" type="button" id="otpOk">Verify and sign</button></div>
+  </div>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+(function(){
+"use strict";
+const ICONS={"check": "<path d=\"M20 6 9 17l-5-5\"/>", "x": "<path d=\"M18 6 6 18M6 6l12 12\"/>", "excl": "<path d=\"M12 5v9M12 19h.01\"/>", "minus": "<path d=\"M6 12h12\"/>", "alert": "<circle cx=\"12\" cy=\"12\" r=\"10\"/><path d=\"M12 8v4M12 16h.01\"/>", "help": "<circle cx=\"12\" cy=\"12\" r=\"10\"/><path d=\"M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3M12 17h.01\"/>", "repeat": "<path d=\"m17 2 4 4-4 4M3 11v-1a4 4 0 0 1 4-4h14M7 22l-4-4 4-4M21 13v1a4 4 0 0 1-4 4H3\"/>", "clock": "<circle cx=\"12\" cy=\"12\" r=\"10\"/><path d=\"M12 6v6l4 2\"/>", "lock": "<rect x=\"3\" y=\"11\" width=\"18\" height=\"11\" rx=\"2\"/><path d=\"M7 11V7a5 5 0 0 1 10 0v4\"/>", "moon": "<path d=\"M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z\"/>", "sun": "<circle cx=\"12\" cy=\"12\" r=\"4\"/><path d=\"M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41\"/>", "flag": "<path d=\"M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1zM4 22v-7\"/>", "rotate": "<path d=\"M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8\"/><path d=\"M3 3v5h5\"/>", "eye": "<path d=\"M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z\"/><circle cx=\"12\" cy=\"12\" r=\"3\"/>", "undo": "<path d=\"M9 14 4 9l5-5\"/><path d=\"M4 9h10.5a5.5 5.5 0 0 1 0 11H11\"/>", "file": "<path d=\"M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z\"/><path d=\"M14 2v4a2 2 0 0 0 2 2h4M16 13H8M16 17H8M10 9H8\"/>", "qr": "<rect x=\"3\" y=\"3\" width=\"7\" height=\"7\" rx=\"1\"/><rect x=\"14\" y=\"3\" width=\"7\" height=\"7\" rx=\"1\"/><rect x=\"3\" y=\"14\" width=\"7\" height=\"7\" rx=\"1\"/><path d=\"M14 14h3v3h-3zM20 14v.01M14 20v.01M17 20h4v-3\"/>", "shield": "<path d=\"M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10\"/><path d=\"m9 12 2 2 4-4\"/>"};
+const svg=(n,s=16)=>`<svg class="i" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">${ICONS[n]}</svg>`;
+/* ---------------- utilities ---------------- */
+const $ = (s, r=document) => r.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const fmtDate = iso => { if(!iso) return "—"; const [y,m,d] = iso.split("-").map(Number); return `${d} ${MONTHS[m-1]} ${y}`; };
+const todayISO = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`; };
+const nowTime = () => { const d = new Date(); return `${todayISO()} ${String(d.getHours()).padStart(2,"0")}:${String(d.getMinutes()).padStart(2,"0")}:${String(d.getSeconds()).padStart(2,"0")}`; };
+const store = {
+  get(k){ try{ return JSON.parse(localStorage.getItem(k)); }catch(e){ return null; } },
+  set(k,v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} },
+  del(k){ try{ localStorage.removeItem(k); }catch(e){} }
+};
+let toastTimer;
+function toast(msg, alert){ const t=$("#toast"); t.textContent=msg; t.className="toast show"+(alert?" alert":""); clearTimeout(toastTimer); toastTimer=setTimeout(()=>t.className="toast",3600); }
+
+/* ---------------- SHA-256 (local, no network) ---------------- */
+function sha256(str){ return sha256Bytes(new TextEncoder().encode(str)); }
+function sha256Bytes(input){
+  const K=[], H=[]; let n=2, found=0;
+  const isPrime = x => { for(let i=2;i*i<=x;i++) if(x%i===0) return false; return true; };
+  while(found<64){ if(isPrime(n)){ if(found<8) H[found]=(Math.pow(n,.5)*4294967296)|0; K[found]=(Math.pow(n,1/3)*4294967296)|0; found++; } n++; }
+  const bitLen0 = input.length*8, padLen = ((input.length+9+63)>>6)<<6, bytes = new Uint8Array(padLen);
+  bytes.set(input); bytes[input.length]=0x80;
+  const hi=Math.floor(bitLen0/4294967296), lo=bitLen0>>>0;
+  bytes.set([(hi>>>24)&255,(hi>>>16)&255,(hi>>>8)&255,hi&255,(lo>>>24)&255,(lo>>>16)&255,(lo>>>8)&255,lo&255], padLen-8);
+  const rotr=(x,r)=>(x>>>r)|(x<<(32-r));
+  const h=H.slice(), w=new Array(64);
+  for(let off=0; off<bytes.length; off+=64){
+    for(let i=0;i<16;i++) w[i]=(bytes[off+4*i]<<24)|(bytes[off+4*i+1]<<16)|(bytes[off+4*i+2]<<8)|bytes[off+4*i+3];
+    for(let i=16;i<64;i++){ const s0=rotr(w[i-15],7)^rotr(w[i-15],18)^(w[i-15]>>>3), s1=rotr(w[i-2],17)^rotr(w[i-2],19)^(w[i-2]>>>10); w[i]=(w[i-16]+s0+w[i-7]+s1)|0; }
+    let [a,b,c,d,e,f,g,hh]=h;
+    for(let i=0;i<64;i++){
+      const S1=rotr(e,6)^rotr(e,11)^rotr(e,25), ch=(e&f)^(~e&g), t1=(hh+S1+ch+K[i]+w[i])|0;
+      const S0=rotr(a,2)^rotr(a,13)^rotr(a,22), mj=(a&b)^(a&c)^(b&c), t2=(S0+mj)|0;
+      hh=g; g=f; f=e; e=(d+t1)|0; d=c; c=b; b=a; a=(t1+t2)|0;
+    }
+    h[0]=(h[0]+a)|0; h[1]=(h[1]+b)|0; h[2]=(h[2]+c)|0; h[3]=(h[3]+d)|0; h[4]=(h[4]+e)|0; h[5]=(h[5]+f)|0; h[6]=(h[6]+g)|0; h[7]=(h[7]+hh)|0;
+  }
+  return h.map(x=>(x>>>0).toString(16).padStart(8,"0")).join("");
+}
+const fpCode = hex => hex.slice(0,16).toUpperCase().match(/.{4}/g).join(" ");
+
+/* ---------------- QR code encoder (byte mode, ECC M, v1–10) ---------------- */
+const QR = (function(){
+  const ECC_CW = [-1,10,16,26,18,24,16,18,22,22,26];
+  const BLOCKS = [-1,1,1,1,2,2,4,4,4,5,5];
+  function rawModules(v){ let r=(16*v+128)*v+64; if(v>=2){ const na=Math.floor(v/7)+2; r-=(25*na-10)*na-55; if(v>=7) r-=36; } return r; }
+  const dataCW = v => Math.floor(rawModules(v)/8) - ECC_CW[v]*BLOCKS[v];
+  function gmul(x,y){ let z=0; for(let i=7;i>=0;i--){ z=(z<<1)^((z>>>7)*0x11D); z^=((y>>>i)&1)*x; } return z&255; }
+  function rsDivisor(deg){ const r=new Array(deg).fill(0); r[deg-1]=1; let root=1; for(let i=0;i<deg;i++){ for(let j=0;j<r.length;j++){ r[j]=gmul(r[j],root); if(j+1<r.length) r[j]^=r[j+1]; } root=gmul(root,2); } return r; }
+  function rsRem(data,div){ const r=new Array(div.length).fill(0); for(const b of data){ const f=b^r.shift(); r.push(0); div.forEach((c,i)=>r[i]^=gmul(c,f)); } return r; }
+  function alignPos(v){ if(v===1) return []; const n=Math.floor(v/7)+2, size=v*4+17; const step=Math.ceil((v*4+4)/(n*2-2))*2; const res=[6]; for(let p=size-7; res.length<n; p-=step) res.splice(1,0,p); return res; }
+  function encode(text){
+    const bytes = Array.from(new TextEncoder().encode(text));
+    let ver=0;
+    for(let v=1; v<=10; v++){ const need=4+(v<10?8:16)+bytes.length*8; if(need<=dataCW(v)*8){ ver=v; break; } }
+    if(!ver) throw new Error("Text too long for QR v10");
+    const cap=dataCW(ver)*8, bits=[];
+    const put=(val,len)=>{ for(let i=len-1;i>=0;i--) bits.push((val>>>i)&1); };
+    put(4,4); put(bytes.length, ver<10?8:16); bytes.forEach(b=>put(b,8));
+    put(0, Math.min(4, cap-bits.length)); while(bits.length%8) bits.push(0);
+    for(let pad=0xEC; bits.length<cap; pad^=0xEC^0x11) put(pad,8);
+    const data=[]; for(let i=0;i<bits.length;i+=8){ let b=0; for(let j=0;j<8;j++) b=(b<<1)|bits[i+j]; data.push(b); }
+    // ECC + interleave
+    const nb=BLOCKS[ver], ecl=ECC_CW[ver], raw=Math.floor(rawModules(ver)/8);
+    const nShort=nb-raw%nb, shortLen=Math.floor(raw/nb), div=rsDivisor(ecl), blocks=[];
+    for(let i=0,k=0;i<nb;i++){ const d=data.slice(k,k+shortLen-ecl+(i<nShort?0:1)); k+=d.length; const e=rsRem(d,div); if(i<nShort) d.push(0); blocks.push(d.concat(e)); }
+    const cw=[]; for(let i=0;i<blocks[0].length;i++) for(let j=0;j<blocks.length;j++) if(i!==shortLen-ecl || j>=nShort) cw.push(blocks[j][i]);
+    // matrix
+    const size=ver*4+17, M=[...Array(size)].map(()=>new Array(size).fill(false)), F=[...Array(size)].map(()=>new Array(size).fill(false));
+    const setF=(x,y,on)=>{ M[y][x]=on; F[y][x]=true; };
+    for(let i=0;i<size;i++){ setF(6,i,i%2===0); setF(i,6,i%2===0); }
+    [[3,3],[size-4,3],[3,size-4]].forEach(([cx,cy])=>{ for(let dy=-4;dy<=4;dy++) for(let dx=-4;dx<=4;dx++){ const x=cx+dx,y=cy+dy; if(x<0||y<0||x>=size||y>=size) continue; const d=Math.max(Math.abs(dx),Math.abs(dy)); setF(x,y,d!==2&&d!==4); } });
+    const ap=alignPos(ver), na=ap.length;
+    for(let i=0;i<na;i++) for(let j=0;j<na;j++){ if((i===0&&j===0)||(i===0&&j===na-1)||(i===na-1&&j===0)) continue; for(let dy=-2;dy<=2;dy++) for(let dx=-2;dx<=2;dx++) setF(ap[i]+dx,ap[j]+dy,Math.max(Math.abs(dx),Math.abs(dy))!==1); }
+    const drawFormat=(mask)=>{ const d=(0<<3)|mask; let r=d; for(let i=0;i<10;i++) r=(r<<1)^((r>>>9)*0x537); const b=((d<<10)|r)^0x5412; const g=i=>((b>>>i)&1)===1;
+      for(let i=0;i<=5;i++) setF(8,i,g(i)); setF(8,7,g(6)); setF(8,8,g(7)); setF(7,8,g(8)); for(let i=9;i<15;i++) setF(14-i,8,g(i));
+      for(let i=0;i<8;i++) setF(size-1-i,8,g(i)); for(let i=8;i<15;i++) setF(8,size-15+i,g(i)); setF(8,size-8,true); };
+    drawFormat(0);
+    if(ver>=7){ let r=ver; for(let i=0;i<12;i++) r=(r<<1)^((r>>>11)*0x1F25); const b=(ver<<12)|r; for(let i=0;i<18;i++){ const on=((b>>>i)&1)===1, a=size-11+i%3, c=Math.floor(i/3); setF(a,c,on); setF(c,a,on); } }
+    // codewords
+    let i=0;
+    for(let right=size-1; right>=1; right-=2){ if(right===6) right=5;
+      for(let vert=0; vert<size; vert++) for(let j=0;j<2;j++){ const x=right-j, up=((right+1)&2)===0, y=up?size-1-vert:vert;
+        if(!F[y][x] && i<cw.length*8){ M[y][x]=((cw[i>>>3]>>>(7-(i&7)))&1)===1; i++; } } }
+    const maskFn=[(x,y)=>(x+y)%2===0,(x,y)=>y%2===0,(x,y)=>x%3===0,(x,y)=>(x+y)%3===0,(x,y)=>(Math.floor(x/3)+Math.floor(y/2))%2===0,(x,y)=>x*y%2+x*y%3===0,(x,y)=>(x*y%2+x*y%3)%2===0,(x,y)=>((x+y)%2+x*y%3)%2===0];
+    const applyMask=m=>{ for(let y=0;y<size;y++) for(let x=0;x<size;x++) if(!F[y][x] && maskFn[m](x,y)) M[y][x]=!M[y][x]; };
+    const penalty=()=>{ let p=0, dark=0;
+      for(let y=0;y<size;y++){ let run=1; for(let x=1;x<size;x++){ if(M[y][x]===M[y][x-1]){ run++; if(run===5) p+=3; else if(run>5) p++; } else run=1; } }
+      for(let x=0;x<size;x++){ let run=1; for(let y=1;y<size;y++){ if(M[y][x]===M[y-1][x]){ run++; if(run===5) p+=3; else if(run>5) p++; } else run=1; } }
+      for(let y=0;y<size-1;y++) for(let x=0;x<size-1;x++){ const c=M[y][x]; if(c===M[y][x+1]&&c===M[y+1][x]&&c===M[y+1][x+1]) p+=3; }
+      for(let y=0;y<size;y++) for(let x=0;x<size;x++) if(M[y][x]) dark++;
+      p+=Math.floor(Math.abs(dark*20-size*size*10)/(size*size))*10; return p; };
+    let best=0, bestP=Infinity;
+    for(let m=0;m<8;m++){ applyMask(m); drawFormat(m); const p=penalty(); if(p<bestP){ bestP=p; best=m; } applyMask(m); }
+    applyMask(best); drawFormat(best);
+    return M;
+  }
+  function svg(text){
+    const M=encode(text), n=M.length, q=4, s=n+q*2; let d="";
+    for(let y=0;y<n;y++) for(let x=0;x<n;x++) if(M[y][x]) d+=`M${x+q} ${y+q}h1v1h-1z`;
+    return `<svg viewBox="0 0 ${s} ${s}" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges" role="img" aria-label="QR code"><rect width="${s}" height="${s}" fill="#fff"/><path d="${d}" fill="#111"/></svg>`;
+  }
+  return {encode, svg};
+})();
+
+
+
+/* ================= extra icons ================= */
+Object.assign(ICONS, {
+  user:'<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',
+  building:'<rect x="4" y="2" width="16" height="20" rx="2"/><path d="M9 22v-4h6v4M8 6h.01M12 6h.01M16 6h.01M8 10h.01M12 10h.01M16 10h.01M8 14h.01M12 14h.01M16 14h.01"/>',
+  camera:'<path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3z"/><circle cx="12" cy="13" r="3"/>',
+  upload:'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m17 8-5-5-5 5M12 3v12"/>',
+  download:'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5M12 15V3"/>',
+  bell:'<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>',
+  chat:'<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>',
+  triangle:'<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4M12 17h.01"/>',
+  link:'<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>',
+  search:'<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>',
+  list:'<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>',
+  chart:'<path d="M3 3v18h18"/><path d="M7 16v-5M12 16V8M17 16v-9"/>',
+  layout:'<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/>',
+  pen:'<path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/>',
+  ban:'<circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/>',
+  logout:'<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/>',
+  arrow:'<path d="M5 12h14M12 5l7 7-7 7"/>',
+  up:'<path d="m18 15-6-6-6 6"/>',
+  arrowback:'<path d="M19 12H5M12 19l-7-7 7-7"/>'
+});
+
+/* ================= statuses (team flow, Nov 2026) ================= */
+const STATUS = {
+  valid:    {label:"Valid", c:"var(--ok)", bg:"var(--ok-bg)", icon:"check", desc:"Genuine, unchanged and current. AHSL's signature is valid and the fingerprint matches the stored record.", advice:"You can rely on this report if the issue date and revision on your copy match the ones shown here."},
+  amended:  {label:"Amended", c:"var(--warn)", bg:"var(--warn-bg)", icon:"alert", desc:"A newer revision exists, so this copy is out of date.", advice:"Ask for the current revision, or open it below."},
+  expired:  {label:"Expired", c:"var(--grey)", bg:"var(--grey-bg)", icon:"clock", desc:"The report is past its validity period.", advice:"Don't rely on it for current compliance."},
+  revoked:  {label:"Revoked", c:"var(--bad)", bg:"var(--bad-bg)", icon:"x", desc:"AHSL withdrew the report. Every copy now shows this.", advice:"Do not accept this report."},
+  altered:  {label:"Altered", c:"var(--bad)", bg:"var(--bad-bg)", icon:"triangle", desc:"Someone changed the report (a date, say), so its fingerprint no longer matches AHSL's record.", advice:"Do not accept this copy. Ask for the original or contact AHSL."},
+  notfound: {label:"Not found", c:"var(--alt)", bg:"var(--alt-bg)", icon:"help", desc:"No such report exists, or the QR code wasn't signed by AHSL. It's a fake or invented QR code.", advice:"Do not accept it unless AHSL confirms it. Check that the number was typed correctly."}
+};
+const chip = (k, label) => { const s=STATUS[k]; return `<span class="status-chip" style="background:${s.bg};color:${s.c}">${svg(s.icon,13)} ${esc(label||s.label)}</span>`; };
+
+/* ================= registry (fictional) ================= */
+const APPROVER = "Dr. K. Example, Laboratory Manager";
+const signOf = hash => sha256("AHSL-HSM-PRIVATE-KEY-DEMO|"+hash); /* stands in for an RSA/ECDSA signature */
+function V(rev, issued, o){ return {rev, issued, expires:o.expires||null, note:o.note||"Original issue", results:o.results, details:{customer:o.customer, project:o.project, sample:o.sample, approver:o.approver||APPROVER}, fileHash:o.fileHash||null, limsResults:o.limsResults||null, supersededBy:null}; }
+function canon(ref, rec, v, results){ return [ref,"R"+v.rev,rec.type,v.details.customer,v.details.project,v.details.sample,v.issued,v.expires||"",results,v.details.approver].join("|"); }
+function seedRegistry(){
+  const r = {
+    "DEMO-CIV-26-01873":{type:"Concrete cube compressive strength", dept:"Civil", versions:[V(0,"2026-09-14",{customer:"Demo Builders LLC", project:"Villa block C", sample:"3 concrete cubes, 150 mm, grade C40/50", results:"Cube 1 47.6 MPa; Cube 2 48.9 MPa; Cube 3 50.2 MPa", fileHash:"14f60e12435df6f1ed8f4d5a8a6e6d978f80d595dc2b9bf977818e0e968dc910"})]},
+    "DEMO-GEO-26-00932":{type:"Soil compaction test (Proctor)", dept:"Geotechnical", versions:[
+      V(0,"2026-06-18",{customer:"Demo Builders LLC", project:"Villa block C", sample:"Soil, borehole BH-02, depth 1.5–2.0 m", results:"MDD 1.98 g/cm³; OMC 11.2 %"}),
+      V(1,"2026-07-02",{customer:"Demo Builders LLC", project:"Villa block C", sample:"Soil, borehole BH-02, depth 2.0–2.5 m", results:"MDD 1.98 g/cm³; OMC 11.2 %", note:"Amended: corrected sample depth (typing error)"})]},
+    "DEMO-CAL-24-00217":{type:"Calibration certificate (pressure gauge)", dept:"Calibration", versions:[V(0,"2024-09-01",{customer:"Demo Facilities Management", project:"Plant room maintenance", sample:"Pressure gauge, serial PG-5512", results:"Within ±0.5 % FS at all points", expires:"2025-08-31"})]},
+    "DEMO-CAL-26-00388":{type:"Calibration certificate (digital thermometer)", dept:"Calibration", versions:[V(0,"2026-04-01",{customer:"Demo Builders LLC", project:"Site QA equipment", sample:"Digital thermometer, serial DT-2290", results:"Error ≤ 0.2 °C from 0 to 100 °C", expires:"2027-03-31"})]},
+    "DEMO-ENV-26-00561":{type:"Ambient air quality monitoring", dept:"Environmental", versions:[V(0,"2026-05-11",{customer:"Demo Infrastructure Co.", project:"Access road corridor", sample:"24-hour PM10 / PM2.5 sampling, station AQ-3", results:"PM10 61 µg/m³; PM2.5 24 µg/m³"})], revoked:{date:"2026-06-20", reason:"Withdrawn after a sample-handling nonconformity", by:APPROVER}},
+    "DEMO-CHM-26-00777":{type:"Potable water chemical analysis", dept:"Chemical", versions:[V(0,"2026-10-02",{customer:"Demo Facilities Management", project:"Tower 3 water tanks", sample:"Potable water, tank T3-B outlet", results:"pH 7.4; TDS 210 mg/L; chloride 48 mg/L", limsResults:"pH 7.4; TDS 180 mg/L; chloride 48 mg/L"})]}
+  };
+  r["DEMO-GEO-26-00932"].versions[0].supersededBy = 1;
+  for(const [ref,rec] of Object.entries(r)) rec.versions.forEach(v=>{ v.hash = sha256(canon(ref,rec,v,v.results)); v.sig = signOf(v.hash); });
+  return r;
+}
+const curV = rec => rec.versions[rec.versions.length-1];
+function verStatus(rec, v){
+  if(v.limsResults) return "altered";
+  if(rec.revoked) return "revoked";
+  if(v.supersededBy!=null) return "amended";
+  if(v.expires && v.expires < todayISO()) return "expired";
+  return "valid";
+}
+const qrBase = () => /^https?:/.test(location.protocol) ? location.href.split("#")[0] : "https://verify.example.invalid/";
+const qrLink = (ref, v) => `${qrBase()}#v-${ref}-R${v.rev}-${v.sig.slice(0,16)}`;
+
+/* ================= seeded logs ================= */
+function seededRandom(seed){ let x=seed; return ()=>{ x=(x*1103515245+12345)%2147483648; return x/2147483648; }; }
+function seedVlog(){
+  const rnd=seededRandom(42), out=[];
+  const results=[...Array(34).fill("valid"),...Array(4).fill("amended"),...Array(2).fill("expired"),"revoked",...Array(5).fill("notfound")];
+  const who=[...Array(33).fill("regulator"),...Array(13).fill("ahsl")];
+  for(let i=0;i<results.length;i++){
+    const d=new Date(); d.setDate(d.getDate()-Math.floor(rnd()*30)); d.setHours(8+Math.floor(rnd()*9), Math.floor(rnd()*60));
+    const res=results[i], pick=a=>a[Math.floor(rnd()*a.length)];
+    const ref = res==="notfound" ? `DEMO-CIV-26-${String(90000+Math.floor(rnd()*9999)).padStart(5,"0")}` : res==="amended" ? "DEMO-GEO-26-00932" : res==="expired" ? "DEMO-CAL-24-00217" : res==="revoked" ? "DEMO-ENV-26-00561" : pick(["DEMO-CIV-26-01873","DEMO-CAL-26-00388","DEMO-GEO-26-00932"]);
+    out.push({t:d.toISOString(), ref, requester:who[Math.floor(rnd()*who.length)], result:res, via:rnd()<0.8?"QR scan":"Reference lookup"});
+  }
+  return out.sort((a,b)=>a.t<b.t?-1:1);
+}
+function seedAlerts(){
+  return [
+    {t:"2026-11-18T09:12:00", title:"Access from an unknown device", detail:"A Laboratory Manager sign-in from an unrecognised device was blocked until MFA was completed.", sev:"Medium"},
+    {t:"2026-11-03T14:40:00", title:"Stored record changed: DEMO-CHM-26-00777", detail:"The report details no longer match the fingerprint registered at approval. Record locked pending investigation.", sev:"High"}
+  ];
+}
+function seedTemplates(){
+  return [
+    {id:"T1", name:"Standard concrete cube report (BS EN 12390-3)", status:"standard", by:"QHSE Manager", sections:["Header with report number, revision and QR code","Client, project and sample details","Results table: cube, mass, density, load, strength","Statement of conformity","Approver signature block"]},
+    {id:"T2", name:"Bilingual soil report (English / Arabic headings)", status:"standard", by:"QHSE Manager", sections:["Bilingual header","Sample and borehole details","Results with units in both languages","Approver signature block"]}
+  ];
+}
+
+/* ================= drafts (AI-proposed data, draft p.57) ================= */
+const EXISTING_SAMPLE_ABU_DHABI = "SMP-26-118430";
+function F(k,n,v,src,conf,extra){ return Object.assign({k,n,v,orig:v,src,conf,state:"proposed"}, extra||{}); }
+function seedDrafts(){
+  const a = { id:"DEMO-CIV-26-02051", type:"Concrete cube compressive strength", standard:"BS EN 12390-3", dept:"Civil", branch:"Dubai",
+    customer:"Demo Builders LLC", project:"Villa block D", sample:"3 concrete cubes, 150 mm, grade C40/50",
+    sources:["CR-5520_handwritten.pdf","WS-CIV-7731_scan.pdf","CM-02_export.csv"],
+    fields:[
+      F("cref","Client reference","PO-DEMO-4471","CR-5520",.97),
+      F("grade","Concrete grade","C40/50","CR-5520",.96),
+      F("sid","Sample ID","SMP-26-118430","CR-5520",.94,{rule:"dup"}),
+      F("cast","Casting date","2026-10-08","WS-CIV-7731",.92),
+      F("samp","Sampling date","","CR-5520",null,{rule:"req",suggest:"2026-10-08"}),
+      F("test","Test date (28 days)","2026-11-05","WS-CIV-7731",.95),
+      F("temp","Curing water temperature","71 °F","WS-CIV-7731",.90,{rule:"unitC",suggest:"21.7 °C"}),
+      F("c1","Cube 1 strength","47.8 MPa","CM-02",.99,{rule:"cube"}),
+      F("c2","Cube 2 strength","49.1 MPa","CM-02",.99,{rule:"cube"}),
+      F("c3","Cube 3 strength","64.2 MPa","WS-CIV-7731",.62,{rule:"cube",suggest:"46.2 MPa"}),
+      {k:"mean",n:"Mean strength",calc:"mean",src:"computed"}
+    ]};
+  const b = { id:"DEMO-GEO-26-01120", type:"Atterberg limits", standard:"BS 1377-2", dept:"Geotechnical", branch:"Dubai",
+    customer:"Demo Infrastructure Co.", project:"Access road embankment", sample:"Soil, borehole BH-03, depth 2.0–2.5 m",
+    sources:["WS-GEO-2209_scan.pdf","CR-5604_email.pdf"],
+    fields:[
+      F("cref","Client reference","PO-DEMO-5120","CR-5604",.98),
+      F("sid","Sample ID","SMP-26-118977","CR-5604",.97,{rule:"dup"}),
+      F("bh","Borehole / depth","BH-03, 2.0–2.5 m","WS-GEO-2209",.93),
+      F("mc","Natural moisture content","18.4 %","WS-GEO-2209",.95),
+      F("ll","Liquid limit (step 1 of 4)","42 %","WS-GEO-2209",.96),
+      F("pl","Plastic limit (step 2 of 4)","31 %","WS-GEO-2209",.94,{rule:"pl_ml"}),
+      {k:"pi",n:"Plasticity index",calc:"pi",src:"computed"}
+    ]};
+  const r = reqDraft("CR-5531", ["CR-5531_front-desk-photo.jpg"]);
+  return [r,a,b].map(d=>{ Object.assign(d,{stage:"draft", attest:false}); d.expert=d.fields.some(f=>{ const fl=flagOf(d,f); return fl && fl.kind==="anomaly"; }); return d; });
+}
+function reqDraft(id, files){
+  return { id, kind:"request", type:"Customer test request (step 1: sample intake)", dept:"", branch:"Dubai front desk", sources:files, scanned:true, stage:"draft",
+    fields:[
+      F("cust","Customer","Demo Builders LLC","SCAN",.96),
+      F("proj","Project","Villa block D","SCAN",.94),
+      F("stype","Sample type","Disturbed soil, 2 bags","SCAN",.88),
+      F("tests","Tests requested","Atterberg limits; sieve analysis","SCAN",.91),
+      F("samp","Sampling date","","SCAN",null,{rule:"req",reqText:"The form has no sampling date, and ISO/IEC 17025 reports must state one. Ask the customer at the desk, or enter it.",suggest:"2026-11-19"}),
+      F("dept","Department","Civil","SCAN",.83,{rule:"dept",suggest:"Geotechnical"}),
+      F("sid","Bag label / sample ID","SMP-26-118430","SCAN",.92,{rule:"dup"})
+    ]};
+}
+function rebarDraft(id, files){
+  return { id, type:"Steel reinforcement tensile test", standard:"BS 4449", dept:"Civil", branch:"Dubai",
+    customer:"Demo Builders LLC", project:"Villa block D", sample:"3 deformed bars, 16 mm, grade B500B",
+    sources:files, scanned:true, stage:"draft", attest:false,
+    fields:[
+      F("cref","Client reference","PO-DEMO-6630","SCAN",.97),
+      F("grade","Steel grade","B500B","SCAN",.95),
+      F("sid","Sample ID","SMP-26-119204","SCAN",.93,{rule:"dup"}),
+      F("dia","Bar diameter","16 mm","SCAN",.91),
+      F("heat","Heat number","H-48213","SCAN",.86),
+      F("re","Yield strength (Re)","75.4 ksi","SCAN",.90,{rule:"unitMPa",suggest:"519.9 MPa"}),
+      F("rm","Tensile strength (Rm)","618 MPa","SCAN",.94),
+      F("agt","Elongation at max force (Agt)","","SCAN",null,{rule:"req",suggest:"7.4 %",reqText:"Agt is required by BS 4449 but wasn't on the form. The machine print-out shows 7.4 %. Confirm it or enter the value."}),
+      {k:"ratio",n:"Rm/Re ratio",calc:"ratio",src:"computed"}
+    ]};
+}
+const DOCS = {
+  "DEMO-CIV-26-02051": {
+    "CR-5520": {file:"CR-5520_handwritten.pdf", kind:"Customer request (scanned, handwritten)", style:"hand", lines:["#CUSTOMER TEST REQUEST · No. CR-5520","Contact details: [removed before AI call]","Project: Villa block D","PO / ref: {{cref}}","Concrete grade: {{grade}}","Sample ID: {{sid}}","Date sampled: {{samp}}","Tests: compressive strength, 3 cubes @ 28 days"]},
+    "WS-CIV-7731": {file:"WS-CIV-7731_scan.pdf", kind:"Laboratory worksheet (scanned, handwritten)", style:"hand", lines:["#COMPRESSION TEST WORKSHEET · WS-CIV-7731","Date cast: {{cast}}","Date tested: {{test}}","Curing tank temp: {{temp}}","Cube 1: see machine print-out","Cube 2: see machine print-out","Cube 3 (manual): {{c3|~46.2 MPa}}","Technician: M.D."]},
+    "CM-02": {file:"CM-02_export.csv", kind:"Equipment output (compression machine)", style:"csv", lines:["machine,CM-02 Compression 3000kN","calibration_valid_until,2027-02-28","specimen,load_kN,area_mm2,strength_MPa","C1,1075.5,22500,{{c1|47.8}}","C2,1104.8,22500,{{c2|49.1}}","C3,,,  (manual test, see worksheet)"]}
+  },
+  "DEMO-GEO-26-01120": {
+    "CR-5604": {file:"CR-5604_email.pdf", kind:"Customer request (email)", style:"mail", lines:["From: [removed before AI call]","Subject: Atterberg limits, access road embankment","","Please test the attached sample per BS 1377-2.","PO number: {{cref}}","Sample ID: {{sid}}"]},
+    "WS-GEO-2209": {file:"WS-GEO-2209_scan.pdf", kind:"Laboratory worksheet (scanned, handwritten)", style:"hand", lines:["#ATTERBERG LIMITS WORKSHEET · WS-GEO-2209","Borehole / depth: {{bh}}","Moisture content: {{mc}}","Liquid limit (cone): {{ll}}","Plastic limit: {{pl}}","Checked by: R.D."]}
+  }
+};
+const REQ_LINES = ["#CUSTOMER TEST REQUEST (photographed at the front desk)","Customer: {{cust}}","Contact details: [removed before AI call]","Project: {{proj}}","Sample: {{stype}}   Bag label: {{sid}}","Tests: {{tests}}","Sampled on: {{samp}}","Send to dept: {{dept}}"];
+const REBAR_LINES = ["#TENSILE TEST FORM (photographed in the portal)","Contact details: [removed before AI call]","PO / ref: {{cref}}","Grade: {{grade}}   Sample ID: {{sid}}","Bar diameter: {{dia}}   Heat no.: {{heat}}","Re: {{re}}","Rm: {{rm}}","Agt: {{agt}}"];
+const BLOBS = {};
+const srcKey = f => String(f.src||"").split("_")[0];
+function docsFor(d){
+  if(d.scanned) return {"SCAN": {file:d.sources[0]||"form photo", kind:d.kind==="request"?"Customer request form (photo)":"Form photographed in the portal", style:"hand", lines:d.kind==="request"?REQ_LINES:REBAR_LINES, blob:BLOBS[d.id]||null}};
+  return DOCS[d.id]||{};
+}
+
+/* ================= roles (team flow, org chart) ================= */
+const APPROVE_PERMS=["review","approve","amend","revoke","templates","log","lookup"];
+const ROLES = {
+  entry:{name:"R. Demo", initials:"RD", title:"Data Entry Officer · front desk, Dubai", short:"Data Entry Officer", perms:["enter","scan"]},
+  hod:{name:"S. Example", initials:"SE", title:"Head of Department · Civil", short:"Head of Department", perms:APPROVE_PERMS},
+  lm:{name:"Dr. K. Example", initials:"KE", title:"Laboratory Manager · Dubai", short:"Laboratory Manager", perms:APPROVE_PERMS.concat(["escalated"])},
+  qhse:{name:"N. Sample", initials:"NS", title:"QHSE Manager · alerts, rules and audit", short:"QHSE Manager", perms:["alerts","rules","audit","templates","log","lookup"]},
+  sales:{name:"S. Placeholder", initials:"SP", title:"Sales / CRM · customer questions by phone and email", short:"Sales / CRM", perms:["log","lookup","inquiry"]}
+};
+const USERS = [
+  {id:"inspector.demo", type:"regulator", name:"A. Inspector", org:"Building inspector · Demo Municipality", group:"Regulators"},
+  {id:"officer.demo", type:"regulator", name:"B. Officer", org:"Safety officer · Demo Civil Defence Authority", group:"Regulators"},
+  {id:"r.demo", type:"staff", role:"entry", group:"AHSL staff"},
+  {id:"s.example", type:"staff", role:"hod", group:"AHSL staff"},
+  {id:"k.example", type:"staff", role:"lm", group:"AHSL staff"},
+  {id:"n.sample", type:"staff", role:"qhse", group:"AHSL staff"},
+  {id:"s.placeholder", type:"staff", role:"sales", group:"AHSL staff"}
+];
+const userLabel = u => u.type==="regulator" ? `${u.id} · ${u.org}` : `${u.id} · ${ROLES[u.role].short}`;
+const can = p => ROLES[S.role].perms.includes(p);
+const isApprover = () => can("approve");
+const TABS = [
+  {id:"queue", label:"Work queue", icon:"list", need:["enter","review"], who:"Data Entry Officers, Heads of Department and the Lab Manager"},
+  {id:"scan", label:"Scan a form", icon:"camera", need:["scan"], who:"Data Entry Officers"},
+  {id:"issued", label:"Issued reports", icon:"file", need:["lookup","amend"], who:"approvers, QHSE and Sales / CRM"},
+  {id:"log", label:"Verification log", icon:"chart", need:["log"], who:"approvers, QHSE and Sales / CRM"},
+  {id:"security", label:"Alerts & audit", icon:"shield", need:["alerts","audit"], who:"the QHSE Manager"},
+  {id:"templates", label:"Templates", icon:"layout", need:["templates"], who:"approvers and the QHSE Manager"}
+];
+
+/* ================= state ================= */
+let S;
+function freshState(){
+  return {v:6, user:null, pending:null, reg:seedRegistry(), vlog:seedVlog(), manualInq:24, alerts:seedAlerts(), audit:[], drafts:seedDrafts(), templates:seedTemplates(),
+          role:"entry", tab:"queue", sel:0, client:null, regChecks:[], nf:[], scanCount:0};
+}
+function loadState(){
+  const s = store.get("ahsl.v3");
+  if(s && s.v===6){ S=s; return; }
+  S = freshState();
+  S.drafts.forEach(d=>{
+    log(d.id,"AI Agent","ai","Result data extraction",`Proposed ${d.fields.filter(f=>!f.calc).length} field values from ${d.sources.join(", ")}. Contact details were removed before the AI call.`);
+    const fl=d.fields.filter(f=>flagOf(d,f)).length;
+    log(d.id,"AI Agent","ai","Automated quality check", fl?`${fl} issue${fl>1?"s":""} flagged with explanations.`:"No issues found.");
+  });
+  save();
+}
+const save = () => store.set("ahsl.v3", S);
+function log(rid, actor, kind, action, detail){
+  const prev = S.audit.length ? S.audit[S.audit.length-1].h : "0".repeat(64);
+  const e = {t:nowTime(), rid, actor, kind, action, detail};
+  e.h = sha256(prev + JSON.stringify(e));
+  S.audit.push(e);
+}
+function raiseAlert(title, detail, sev){
+  S.alerts.push({t:new Date().toISOString(), title, detail, sev:sev||"Medium", live:true});
+  log("SECURITY","Monitoring","alert",title,detail+" Sent to the QHSE Manager and administration officer.");
+}
+
+/* ================= AI rule engine (draft p.13, 74, 90) ================= */
+const num = v => { const m=String(v||"").match(/-?\d+(?:\.\d+)?/); return m?parseFloat(m[0]):NaN; };
+function calcVal(d,f){
+  const g=k=>d.fields.find(x=>x.k===k);
+  if(f.calc==="mean"){ const xs=["c1","c2","c3"].map(k=>num(g(k).v)); return xs.some(isNaN)?"—":(xs.reduce((a,b)=>a+b,0)/3).toFixed(1)+" MPa"; }
+  if(f.calc==="pi"){ const a=num(g("ll").v), b=num(g("pl").v); return isNaN(a)||isNaN(b)?"—":(a-b)+" %"; }
+  if(f.calc==="ratio"){ const re=g("re").v, rm=num(g("rm").v); if(/ksi/i.test(re)||isNaN(num(re))||isNaN(rm)) return "— (needs Re in MPa)"; return (rm/num(re)).toFixed(2); }
+}
+function flagOf(d,f){
+  if(f.calc) return null;
+  const v=String(f.v||"").trim();
+  if(f.rule==="req" && !v) return {kind:"entry", type:"Missing information", text: f.reqText || "The customer request has no sampling date, and ISO/IEC 17025 reports must state one. The delivery note shows 2026-10-08. Confirm with the client or enter the date."};
+  if(f.rule==="unitC"){
+    if(/°?\s*F\b/i.test(v)){ const c=((num(v)-32)*5/9).toFixed(1); return {kind:"entry", type:"Wrong unit", text:`The worksheet value is in °F, but LIMS stores curing temperature in °C. ${num(v)} °F = ${c} °C, which is within the 20 ± 2 °C requirement.`}; }
+    const c=num(v); if(isNaN(c)||!/C\b/i.test(v)) return {kind:"entry", type:"Format", text:"Enter the temperature as a number followed by °C, for example 21.0 °C."};
+    if(c<18||c>22) return {kind:"entry", type:"Out of range", text:`${c} °C is outside the 20 ± 2 °C curing requirement in BS EN 12390-2.`};
+  }
+  if(f.rule==="unitMPa"){
+    if(/ksi/i.test(v)) return {kind:"entry", type:"Wrong unit", text:`LIMS stores strength in MPa. ${num(v)} ksi = ${(num(v)*6.89476).toFixed(1)} MPa.`};
+    if(isNaN(num(v))) return {kind:"entry", type:"Format", text:"Enter the yield strength as a number in MPa."};
+    if(num(v)<500) return {kind:"anomaly", type:"Below specification", text:`${num(v)} MPa is below the B500B minimum yield strength of 500 MPa.`};
+  }
+  if(f.rule==="cube"){
+    const x=num(v); if(isNaN(x)) return {kind:"entry", type:"Format", text:"Enter the strength as a number in MPa."};
+    const set=["c1","c2","c3"].map(k=>num(d.fields.find(z=>z.k===k).v)).filter(n=>!isNaN(n)).sort((a,b)=>a-b);
+    const m=set[Math.floor(set.length/2)], dev=(x-m)/m*100;
+    if(x<38||x>56||Math.abs(dev)>15){
+      const hint = f.k==="c3" && v==="64.2 MPa" ? " The handwritten worksheet reads “46.2”, so this may be a digit misread (4 ↔ 6). Read confidence was low (62%)." : "";
+      return {kind:"anomaly", type:"Unusual result", text:`${x} MPa is ${Math.abs(dev).toFixed(0)}% ${dev>0?"above":"below"} the median of the three cubes (${m.toFixed(1)} MPa) and outside the 38–56 MPa range seen in 1,240 past C40/50 results.${hint}`};
+    }
+  }
+  if(f.rule==="dept"){ const tests=String((d.fields.find(z=>z.k==="tests")||{}).v||""); if(/atterberg|sieve|proctor|cbr/i.test(tests) && v.toLowerCase()!=="geotechnical") return {kind:"entry", type:"Wrong department", text:`The tests requested (${tests}) are Geotechnical tests, but the form sends the sample to ${v||"no department"}.`}; }
+  if(f.rule==="pl_ml"){ const ll=num((d.fields.find(z=>z.k==="ll")||{}).v), pl=num(v); if(!isNaN(ll)&&!isNaN(pl)){ const lo=Math.round(ll*0.43), hi=Math.round(ll*0.6); if(pl<lo||pl>hi) return {kind:"anomaly", type:"Unexpected step result (ML model)", text:`${pl} % is outside the ${lo}–${hi} % plastic limit the ML model predicts for a liquid limit of ${ll} %, based on 3,100 past test chains. Flagged now, before steps 3 and 4 (shrinkage limit and classification) are run on this sample.`}; } }
+  if(f.rule==="dup" && v===EXISTING_SAMPLE_ABU_DHABI) return {kind:"entry", type:"Possible duplicate", text:"The same sample ID, client and casting date already exist in the Abu Dhabi branch database (draft DEMO-CIV-26-01990). Correct it, or confirm it is a separate sample."};
+  return null;
+}
+function stats(d){
+  const real=d.fields.filter(f=>!f.calc);
+  const entryOpen=real.filter(f=>{ const fl=flagOf(d,f); return f.state==="proposed" || (fl && fl.kind==="entry" && f.state!=="override"); });
+  const tmOpen=real.filter(f=>{ const fl=flagOf(d,f); return fl && fl.kind==="anomaly" && f.state!=="proposed" && f.decision!=="accept"; });
+  const escalated=real.filter(f=>f.decision==="escalate" && flagOf(d,f));
+  const flags=real.filter(f=>flagOf(d,f));
+  return {real, entryOpen, tmOpen, escalated, flags};
+}
+
+/* ================= verification ================= */
+function parseRef(input){
+  const s=String(input||"").toUpperCase().trim().replace(/\s+/g," ");
+  const m=s.match(/^(DEMO-[A-Z]{3}-\d{2}-\d{5})(?:\s*[\/\s-]\s*R(?:EV)?\.?\s*(\d{1,2}))?(?:-([0-9A-F]{16}))?$/);
+  if(!m) return {ok:false, ref:s};
+  return {ok:true, ref:m[1], rev:m[2]!=null?Number(m[2]):null, hash:m[3]?m[3].toLowerCase():null};
+}
+function logCheck(ref, result, requester, via){
+  S.vlog.push({t:new Date().toISOString(), ref, requester, result, via});
+  if(result==="notfound"){
+    const now=Date.now(); S.nf=(S.nf||[]).filter(t=>now-t<10*60*1000); S.nf.push(now);
+    if(S.nf.length>=3 && !S.alerts.some(a=>a.title.startsWith("Spike in") && now-new Date(a.t).getTime()<10*60*1000))
+      raiseAlert("Spike in “not found” results", `${S.nf.length} checks returned Not found in the last 10 minutes. Forged reports may be in circulation.`, "High");
+  }
+  save();
+}
+/* returns a result object; logs a VerificationRequest */
+function verify({input, requester="regulator", via="Reference lookup", copy={}}){
+  const p=parseRef(input), rec=p.ok?S.reg[p.ref]:null, checks=[];
+  if(!rec){
+    checks.push({r:"fail", t:"Report found in AHSL's records", d:p.ok?"No report with this number has been issued.":"This doesn't look like an AHSL report number. Check the format."});
+    logCheck(p.ok?p.ref:String(input).slice(0,40), "notfound", requester, via);
+    return {status:"notfound", ref:p.ref, checks, via};
+  }
+  const cur=curV(rec), rev=p.rev==null?cur.rev:p.rev, v=rec.versions.find(x=>x.rev===rev);
+  if(!v){
+    checks.push({r:"pass", t:"Report found in AHSL's records"});
+    checks.push({r:"fail", t:`Revision ${rev} exists`, d:`This report has no revision ${rev}.`});
+    logCheck(p.ref,"notfound",requester,via);
+    return {status:"notfound", ref:p.ref, checks, via};
+  }
+  checks.push({r:"pass", t:"Report found in AHSL's records"});
+  if(p.hash){
+    if(!v.sig.startsWith(p.hash)){
+      checks.push({r:"fail", t:"AHSL signature valid", d:"The signature in this QR code wasn't made with AHSL's private key. The QR code is fake or was edited."});
+      logCheck(p.ref,"notfound",requester,via);
+      return {status:"notfound", ref:p.ref, checks, via, fakeQR:true};
+    }
+    checks.push({r:"pass", t:"AHSL signature valid", d:"Checked with AHSL's public key. Only AHSL's private key, held in a hardware security module, can make this signature."});
+  } else checks.push({r:"na", t:"QR signature check", d: via==="PDF check" ? "The PDF's own fingerprint is checked below. Scanning its QR code with the portal also checks AHSL's signature." : "Typed lookups can't check the QR signature. Scan the QR code with the portal for the full check."});
+  checks.push({r:"pass", t:"Approved with a digital signature", d:"Approved by an authorised approver with MFA."});
+  // recalculate the fingerprint from the report details
+  const mism=[];
+  if(copy.date && copy.date!==v.issued) mism.push(`the issue date (your copy says ${fmtDate(copy.date)}; AHSL issued it on ${fmtDate(v.issued)})`);
+  if(copy.project && copy.project.trim().toLowerCase()!==v.details.project.toLowerCase()) mism.push("the project name");
+  if(copy.file===false) mism.push("the PDF file itself");
+  const recordChanged = !!v.limsResults;
+  if(mism.length) checks.push({r:"fail", t:"Fingerprint matches the stored record", d:`Recalculated from the details on your copy. They differ from the issued report in ${mism.join(" and ")}.`});
+  else if(recordChanged) checks.push({r:"fail", t:"Fingerprint matches the stored record", d:"The report's details no longer produce the fingerprint registered at approval."});
+  else checks.push({r:"pass", t:"Fingerprint matches the stored record", d:copy.file===true?"The PDF's SHA-256 fingerprint matches the issued copy.":"Recalculated with SHA-256 from the report details."});
+  if(v.supersededBy!=null) checks.push({r:"warn", t:"Current revision", d:`Revision ${v.supersededBy} supersedes it.`}); else checks.push({r:"pass", t:"Current revision"});
+  if(rec.revoked) checks.push({r:"fail", t:"Not revoked", d:`Revoked on ${fmtDate(rec.revoked.date)}.`}); else checks.push({r:"pass", t:"Not revoked"});
+  if(v.expires) checks.push(v.expires<todayISO()?{r:"warn", t:"Within validity period", d:`Validity ended on ${fmtDate(v.expires)}.`}:{r:"pass", t:"Within validity period", d:`Valid until ${fmtDate(v.expires)}.`});
+  let status = rec.revoked ? "revoked" : (mism.length||recordChanged) ? "altered" : v.supersededBy!=null ? "amended" : (v.expires && v.expires<todayISO()) ? "expired" : "valid";
+  if(recordChanged && !S.alerts.some(a=>a.live && a.title==="Stored record changed: "+p.ref)) raiseAlert("Stored record changed: "+p.ref, "A check found that the report's details no longer match the fingerprint registered at approval.", "High");
+  logCheck(p.ref,status,requester,via);
+  return {status, ref:p.ref, rec, v, cur, checks, via, mism};
+}
+/* ================= public view ================= */
+const icCheck = r => `<span class="ic ${r}" aria-hidden="true">${{pass:svg("check",12),fail:svg("x",12),warn:svg("excl",12),na:svg("minus",12)}[r]}</span>`;
+function resultHTML(res){
+  const St=STATUS[res.status];
+  const sub = res.status==="altered" && res.mism && res.mism.length ? `Your copy differs from the report AHSL issued in ${res.mism.join(" and ")}.` : St.desc;
+  const head = `<div class="status-head" style="background:${St.bg}"><div class="status-icon" style="background:${St.c};color:var(--surface)" aria-hidden="true">${svg(St.icon,26)}</div><div>${res.via?`<div class="qr-note">${svg(res.via==="QR scan"?"qr":res.via==="PDF check"?"file":"search",14)} ${esc(res.via)}</div>`:""}<h2 style="color:${St.c}">${esc(St.label)}</h2><p>${esc(sub)}</p></div></div>`;
+  let meta="", hist="", extra="";
+  if(res.rec){
+    const v=res.v;
+    meta = `<dl class="meta">
+      <div><dt>Report number</dt><dd class="val">${esc(res.ref)}</dd></div>
+      <div><dt>Report type</dt><dd>${esc(res.rec.type)}</dd></div>
+      <div><dt>Issue date</dt><dd>${fmtDate(v.issued)}</dd></div>
+      <div><dt>Revision</dt><dd>${v.rev}${v.supersededBy!=null?` <span style="color:var(--warn)">(latest: ${curV(res.rec).rev})</span>`:""}</dd></div>
+      <div><dt>Status</dt><dd style="color:${St.c}">${esc(St.label)}</dd></div>
+    </dl>`;
+    const ev=res.rec.versions.map(x=>({d:x.issued, t:`Revision ${x.rev} issued`, cur:x.rev===v.rev}));
+    if(res.rec.revoked) ev.push({d:res.rec.revoked.date, t:"Revoked by AHSL"});
+    if(v.expires && v.expires<todayISO()) ev.push({d:v.expires, t:"Validity period ended"});
+    ev.sort((a,b)=>a.d<b.d?-1:a.d>b.d?1:0);
+    hist = `<div><p class="subh">Revision history</p><ol class="timeline">${ev.map(e=>`<li class="${e.cur?"cur":""}"><time>${fmtDate(e.d)}</time><b>${esc(e.t)}</b>${e.cur?` <span class="badge" style="background:var(--gold-soft);color:var(--gold-deep);padding:1px 7px;font-size:12px">this revision</span>`:""}</li>`).join("")}</ol></div>`;
+    if(res.status==="amended") extra=`<div><button type="button" class="ghost fix" data-open-ref="${esc(res.ref)}/R${curV(res.rec).rev}">${svg("arrow",16)} Open the current revision (${curV(res.rec).rev})</button></div>`;
+  }
+  return `${head}<div class="result-body">
+      ${res.status==="valid" ? `<div class="compare-note">${svg("search",16)}<span><b>Check your copy.</b> If the issue date or revision printed on it differ from these, your copy was altered.</span></div>`:""}
+      ${meta}
+      <div class="advice">${esc(St.advice)}</div>
+      <div><p class="subh">Checks performed</p><ul class="checks">${res.checks.map(c=>`<li>${icCheck(c.r)}<span>${esc(c.t)}<span class="sr"> — ${c.r==="na"?"not checked":c.r==="pass"?"passed":c.r==="fail"?"failed":"warning"}</span>${c.d?`<small>${esc(c.d)}</small>`:""}</span></li>`).join("")}</ul></div>
+      ${hist}${extra}
+      <div class="privacy">${svg("lock",16)}<span>Test results and client data are never shown here. Records are kept in AHSL's report registry until mid-2029, then on a permissioned blockchain. QR codes stay the same.</span></div>
+    </div>`;
+}
+function showResult(res){
+  $("#result").innerHTML = resultHTML(res);
+  $("#result").querySelectorAll("[data-open-ref]").forEach(b=>b.addEventListener("click",()=>{ $("#qNo").value=b.dataset.openRef; runVerify({via:"Reference lookup"}); }));
+  if(window.matchMedia("(max-width:860px)").matches) $("#result").scrollIntoView({behavior:"smooth", block:"start"});
+}
+function runVerify({via="Reference lookup", input, copy}={}){
+  const no = input!=null ? input : $("#qNo").value;
+  if(!String(no).trim()){ $("#noErr").innerHTML=`${svg("alert",16)} Enter a report number, for example DEMO-CIV-26-01873, or scan the QR code.`; $("#qNo").setAttribute("aria-invalid","true"); $("#qNo").focus(); return; }
+  $("#noErr").textContent=""; $("#qNo").removeAttribute("aria-invalid");
+  const c = copy || {date:$("#qDate").value||null, project:$("#qProj").value||null};
+  const btn=$("#verifyBtn"); btn.disabled=true; btn.innerHTML=`<span class="spin"></span> Checking…`;
+  setTimeout(()=>{ btn.disabled=false; btn.textContent="Verify report"; showResult(verify({input:no, requester:CHECKER, via, copy:c})); }, 300);
+}
+const SAMPLES = [
+  {label:"Valid", s:"valid", ref:"DEMO-CIV-26-01873", qr:true},
+  {label:"Valid with expiry", s:"valid", ref:"DEMO-CAL-26-00388", qr:true},
+  {label:"Amended (old revision)", s:"amended", ref:"DEMO-GEO-26-00932", rev:0, qr:true},
+  {label:"Expired", s:"expired", ref:"DEMO-CAL-24-00217", qr:true},
+  {label:"Revoked", s:"revoked", ref:"DEMO-ENV-26-00561", qr:true},
+  {label:"Altered (date changed)", s:"altered", ref:"DEMO-CIV-26-01873", qr:true, date:"2026-09-21"},
+  {label:"Altered (record changed)", s:"altered", ref:"DEMO-CHM-26-00777", qr:true},
+  {label:"Not found", s:"notfound", ref:"DEMO-CIV-26-99999"},
+  {label:"Fake QR code", s:"notfound", ref:"DEMO-CIV-26-01873", badHash:true}
+];
+function sampleInput(x){
+  const rec=S.reg[x.ref]; if(!rec) return x.ref;
+  const v = x.rev!=null ? rec.versions.find(y=>y.rev===x.rev) : curV(rec);
+  if(x.badHash) return `${x.ref}-R${v.rev}-0123456789abcdef`;
+  return `${x.ref}-R${v.rev}-${v.sig.slice(0,16)}`;
+}
+function renderSamples(){
+  const issued = Object.keys(S.reg).filter(r=>!seedRegistry()[r]).map(r=>({label:`Issued here: ${r}`, s:"valid", ref:r, qr:true}));
+  const all=SAMPLES.concat(issued);
+  $("#sampleChips").innerHTML = all.map((x,i)=>`<button type="button" class="chip" data-i="${i}"><span class="dot" style="background:${STATUS[x.s].c}"></span>${esc(x.label)}</button>`).join("");
+  $("#sampleChips").querySelectorAll(".chip").forEach(b=>b.addEventListener("click",()=>{
+    const x=all[+b.dataset.i];
+    $("#qNo").value = x.rev!=null ? `${x.ref}/R${x.rev}` : x.ref; $("#qDate").value=x.date||""; $("#qProj").value="";
+    if(x.date) $("details.more").open=true;
+    runVerify({via: (x.qr||x.badHash)?"QR scan":"Reference lookup", input:(x.qr||x.badHash)?sampleInput(x):$("#qNo").value, copy:{date:x.date||null}});
+  }));
+}
+function renderLegend(){
+  $("#legend").innerHTML = Object.values(STATUS).map(s=>`<div class="lg" style="--c:${s.c}"><h3><span class="badge" style="background:${s.bg};color:${s.c}">${svg(s.icon,14)} ${esc(s.label)}</span></h3><p>${esc(s.desc)}</p></div>`).join("");
+  const rec=S.reg["DEMO-CIV-26-01873"], v=curV(rec);
+  $("#printedSample").innerHTML = `${QR.svg(qrLink("DEMO-CIV-26-01873",v)).replace("<svg ","<svg class=\"qrimg\" ")}<div class="t"><b>Scan with the AHSL portal to confirm this report is genuine.</b>Portal: verify.example.invalid (concept)<br>Report DEMO-CIV-26-01873 · Revision 0</div>`;
+}
+
+/* PDF copy check (kept from the earlier version) */
+function findReportNo(bytes, name){
+  let txt=""; const n=Math.min(bytes.length, 4000000);
+  for(let i=0;i<n;i+=65536) txt+=String.fromCharCode.apply(null, bytes.subarray(i, Math.min(n,i+65536)));
+  const re=/DEMO-[A-Z]{3}-\d{2}-\d{5}/; let m=txt.match(re); if(m) return m[0];
+  for(const h of (txt.match(/<FEFF[0-9A-Fa-f]{8,}>/g)||[])){ let t=""; for(let i=5;i+4<=h.length-1;i+=4) t+=String.fromCharCode(parseInt(h.substr(i,4),16)); m=t.match(re); if(m) return m[0]; }
+  m=String(name||"").toUpperCase().match(re); return m?m[0]:null;
+}
+function pdfCheck(file){
+  return file.arrayBuffer().then(buf=>{
+    const bytes=new Uint8Array(buf), hash=sha256Bytes(bytes);
+    let hit=null; for(const [ref,rec] of Object.entries(S.reg)) for(const v of rec.versions) if(v.fileHash===hash) hit={ref,v};
+    const claimed = hit ? hit.ref : findReportNo(bytes, file.name);
+    const res = !claimed ? verify({input:file.name, requester:CHECKER, via:"PDF check"})
+      : verify({input: hit?`${hit.ref}/R${hit.v.rev}`:claimed, requester:CHECKER, via:"PDF check", copy:{file:!!hit}});
+    if(!claimed) res.checks[0].d="No AHSL report number could be found in this file.";
+    res.file=file.name; return res;
+  });
+}
+function handleFiles(list){
+  const files=[...(list||[])]; if(!files.length) return;
+  const pdfs=files.filter(f=>/\.pdf$/i.test(f.name)||f.type==="application/pdf"), skipped=files.length-pdfs.length;
+  if(!pdfs.length){ $("#dropHint").textContent="Please choose PDF files."; return; }
+  if(pdfs.some(f=>f.size>25*1024*1024)){ $("#dropHint").textContent="Each file must be under 25 MB."; return; }
+  $("#dropHint").innerHTML=`<span class="spin" style="width:12px;height:12px;vertical-align:-1px"></span> Computing the fingerprint of ${pdfs.length===1?esc(pdfs[0].name):pdfs.length+" files"}…`;
+  Promise.all(pdfs.slice(0,25).map(pdfCheck)).then(rows=>{
+    $("#dropHint").textContent=`Checked ${rows.length} file${rows.length>1?"s":""}${skipped?` (${skipped} non-PDF file${skipped>1?"s":""} skipped)`:""}. Drop more to check them.`;
+    if(rows.length===1){ if(rows[0].rec) $("#qNo").value=rows[0].ref; showResult(rows[0]); }
+    else { renderBatch(rows, true); $("#batch").scrollIntoView({behavior:"smooth", block:"start"}); }
+  }).catch(()=>{ $("#dropHint").textContent="Couldn't read one of the files. Try again."; });
+}
+/* ================= QR scanner (draft p.107) ================= */
+let scanStream=null, scanTimer=null;
+function openScanner(onResult){
+  lastFocus=document.activeElement;
+  $("#scanModal").classList.add("open");
+  const body=$("#scanBody");
+  const fallback = msg => {
+    body.innerHTML = `<p class="muted" style="margin-top:0">${esc(msg)}</p>
+      <label class="drop" for="qrImg" style="margin-bottom:12px"><span class="di" aria-hidden="true">${svg("upload",22)}</span><span><b>Choose a photo of the QR code</b><small>We read the code in your browser.</small></span><input type="file" id="qrImg" accept="image/*" class="sr"></label>
+      <div class="btn-row"><button class="ghost" type="button" id="scanType">${svg("search",16)} Type the report number instead</button></div>
+      <p class="subh" style="margin-top:18px">Demo: simulate scanning a printed report</p>
+      <div class="chips">${SAMPLES.filter(x=>x.qr||x.badHash).slice(0,6).map((x,i)=>`<button type="button" class="chip" data-sim="${i}">${esc(x.label)}</button>`).join("")}</div>`;
+    $("#scanType").addEventListener("click",()=>{ closeScanner(); $("#qNo").focus(); });
+    body.querySelectorAll("[data-sim]").forEach(b=>b.addEventListener("click",()=>{ const x=SAMPLES.filter(y=>y.qr||y.badHash)[+b.dataset.sim]; closeScanner(); onResult(qrBase()+"#v-"+sampleInput(x)); }));
+    $("#qrImg").addEventListener("change",async e=>{
+      const f=e.target.files[0]; if(!f) return;
+      if(!("BarcodeDetector" in window)){ toast("This browser can't read QR codes from photos. Type the report number instead."); return; }
+      try{ const bmp=await createImageBitmap(f); const codes=await new BarcodeDetector({formats:["qr_code"]}).detect(bmp);
+        if(codes.length){ closeScanner(); onResult(codes[0].rawValue); } else toast("No QR code found in that photo. Try a sharper photo."); }
+      catch(err){ toast("Couldn't read that photo. Try again or type the number."); }
+    });
+  };
+  if(!("BarcodeDetector" in window) || !navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){ fallback("Live scanning isn't available in this browser."); setTimeout(()=>{ const c=body.querySelector("button,label"); c&&c.focus(); },30); return; }
+  body.innerHTML = `<div class="scan-frame"><video id="scanVideo" playsinline muted></video></div><p class="muted small">Point your camera at the QR code on the report.</p><button class="ghost" type="button" id="scanAlt">Use a photo or type the number instead</button>`;
+  $("#scanAlt").addEventListener("click",()=>{ stopStream(); fallback("Choose another way to check the report."); });
+  navigator.mediaDevices.getUserMedia({video:{facingMode:"environment"}}).then(stream=>{
+    scanStream=stream; const vid=$("#scanVideo"); vid.srcObject=stream; vid.play();
+    const det=new BarcodeDetector({formats:["qr_code"]});
+    scanTimer=setInterval(async()=>{ try{ const c=await det.detect(vid); if(c.length){ const val=c[0].rawValue; closeScanner(); onResult(val); } }catch(e){} }, 350);
+  }).catch(()=>{ fallback("Camera access was blocked or isn't available here."); });
+}
+function stopStream(){ clearInterval(scanTimer); scanTimer=null; if(scanStream){ scanStream.getTracks().forEach(t=>t.stop()); scanStream=null; } }
+function closeScanner(){ stopStream(); $("#scanModal").classList.remove("open"); if(lastFocus&&document.contains(lastFocus)) lastFocus.focus(); }
+function handleScanned(raw){
+  const m=String(raw).match(/#v-(DEMO-[A-Z]{3}-\d{2}-\d{5}(?:-R\d+)?(?:-[0-9a-fA-F]{16})?)/);
+  const val = m ? m[1] : String(raw).trim();
+  if(location.hash.startsWith("#v-") || $("#view-verify").hidden){ location.hash="#v-"+val; return; }
+  const pr=parseRef(val); $("#qNo").value=pr.ok?(pr.rev!=null?`${pr.ref}/R${pr.rev}`:pr.ref):val;
+  runVerify({via:"QR scan", input:val, copy:{date:$("#qDate").value||null, project:$("#qProj").value||null}});
+}
+
+/* ================= regulator view ================= */
+function renderRegulator(){
+  const recent=S.vlog.slice(-8).reverse();
+  $("#regPane").innerHTML = `<div class="two-col">
+    <div class="panel"><header><h3>Report numbers</h3></header><div class="pb">
+      <form id="rForm" novalidate style="display:grid;gap:12px">
+        <div><label for="rRefs" style="font-weight:600;font-size:14px;display:block;margin-bottom:6px">Report numbers, one per line</label>
+        <textarea class="t mono" id="rRefs" rows="5" style="min-height:120px;resize:vertical" aria-describedby="rHint rErr" placeholder="DEMO-CIV-26-01873&#10;DEMO-GEO-26-00932/R0"></textarea>
+        <div class="hint" id="rHint" style="margin-top:6px">Paste the numbers from the reports attached to an application. Scanning each QR code with the portal also checks AHSL's signature.</div>
+        <div class="field-err" id="rErr" role="alert" style="margin-top:6px"></div></div>
+        <div class="btn-row"><button class="btn" type="submit">Check all</button><button class="ghost" type="button" id="rUpload">${svg("upload",16)} Upload PDFs</button><button class="ghost" type="button" id="rScan">${svg("camera",16)} Scan a QR code</button><button class="ghost" type="button" id="rSample">Fill a sample submission</button></div>
+      </form></div></div>
+    <div class="panel"><header><h3>Recent checks</h3></header><div class="pb">${recent.length?`<ul class="sec-list">${recent.map(x=>`<li>${icCheck(x.result==="valid"?"pass":["notfound","revoked","altered"].includes(x.result)?"fail":"warn")}<span><b class="val">${esc(x.ref)}</b><span>${esc(STATUS[x.result].label)} · ${esc(x.via)} · ${new Date(x.t).toLocaleString()}</span></span></li>`).join("")}</ul>`:`<p class="muted">No checks yet.</p>`}</div></div>
+  </div>
+  <div id="rOut" style="margin-top:18px" aria-live="polite"></div>`;
+  $("#rUpload").addEventListener("click",()=>$("#fileIn").click());
+  $("#rSample").addEventListener("click",()=>{ $("#rRefs").value="DEMO-CIV-26-01873\nDEMO-GEO-26-00932/R0\nDEMO-ENV-26-00561\nDEMO-CIV-26-99999"; $("#rRefs").focus(); });
+  $("#rScan").addEventListener("click",()=>openScanner(raw=>{ const m=String(raw).match(/#v-(DEMO-[A-Z]{3}-\d{2}-\d{5}(?:-R\d+)?(?:-[0-9a-fA-F]{16})?)/); regCheck([m?m[1]:raw],"QR scan"); }));
+  $("#rForm").addEventListener("submit",e=>{ e.preventDefault(); const refs=$("#rRefs").value.split(/\n|,/).map(x=>x.trim()).filter(Boolean);
+    if(!refs.length){ $("#rErr").innerHTML=`${svg("alert",16)} Enter at least one report number.`; $("#rRefs").focus(); return; } $("#rErr").textContent=""; regCheck(refs,"Reference lookup"); });
+}
+function regCheck(refs, via){ renderBatch(refs.slice(0,25).map(r=>verify({input:r, requester:CHECKER, via})), false); }
+function renderBatch(rows, files){
+  const bad=rows.filter(r=>r.status!=="valid").length;
+  $("#rOut").innerHTML = `<div class="panel"><header><h3>Results: ${rows.length} ${files?"PDF":"report"}${rows.length>1?"s":""} checked, ${bad} need${bad===1?"s":""} attention</h3></header><div class="tbl-wrap"><table class="data stackable">
+    <thead><tr>${files?`<th scope="col">File</th>`:""}<th scope="col">Report</th><th scope="col">Report type</th><th scope="col">Issue date</th><th scope="col">Revision</th><th scope="col">Status</th><th scope="col"><span class="sr">Open</span></th></tr></thead>
+    <tbody>${rows.map((r,i)=>`<tr>${files?`<td data-l="File" class="small" style="overflow-wrap:anywhere">${esc(r.file)}</td>`:""}<td data-l="Report"><span class="val">${r.rec?esc(r.ref):"—"}</span></td><td data-l="Report type">${r.rec?esc(r.rec.type):"—"}</td><td data-l="Issue date">${r.v?fmtDate(r.v.issued):"—"}</td><td data-l="Revision">${r.v?r.v.rev:"—"}</td><td data-l="Status">${chip(r.status)}</td><td><button class="ghost" data-row="${i}">Details</button></td></tr>`).join("")}</tbody></table></div></div>`;
+  $("#rOut").querySelectorAll("[data-row]").forEach(b=>b.addEventListener("click",()=>{ const r=rows[+b.dataset.row]; if(r.rec) $("#qNo").value=r.ref; showResult(r); window.scrollTo({top:0,behavior:"smooth"}); }));
+}
+
+/* ================= staff ================= */
+function renderStaff(){
+  const R=ROLES[S.role];
+  $("#whoName").textContent=R.name; $("#whoRole").textContent=R.title; $("#whoAvatar").textContent=R.initials;
+  const counts = {queue: notifs().filter(n=>n.tab==="queue").length, security: S.alerts.filter(a=>a.live && !a.seen).length, templates: S.templates.filter(t=>t.status==="pending").length};
+  $("#subnav").innerHTML = TABS.filter(t=>t.need.some(can)).map(t=>`<button type="button" data-tab="${t.id}" aria-current="${S.tab===t.id?"page":"false"}">${svg(t.icon,16)} ${esc(t.label)}${counts[t.id]?`<span class="count" aria-label="${counts[t.id]} pending">${counts[t.id]}</span>`:""}</button>`).join("") + `<button type="button" id="goVerify">${svg("qr",16)} Verify a report</button>`;
+  $("#goVerify").addEventListener("click",()=>{ location.hash="#verify"; });
+  $("#subnav").querySelectorAll("[data-tab]").forEach(b=>b.addEventListener("click",()=>{ S.tab=b.dataset.tab; save(); renderStaff(); $("#staffPane").focus&&$("#staffPane").setAttribute("tabindex","-1"); }));
+  renderBell();
+  const tab=TABS.find(t=>t.id===S.tab)||TABS[0];
+  if(!tab.need.some(can)){
+    $("#staffPane").innerHTML = `<div class="panel"><div class="empty-state">${svg("lock",28)}<h2 style="font-size:20px;color:var(--ink)">${esc(tab.label)} isn't part of your role</h2><p>You're signed in as <b>${esc(R.short)}</b>. This section is used by ${esc(tab.who)}. Sign in as one of them to see it.</p></div></div>`;
+    return;
+  }
+  ({queue:renderQueuePage, scan:renderScanPage, issued:renderIssuedPage, log:renderLogPage, security:renderSecurityPage, templates:renderTemplatesPage})[tab.id]();
+  if(DV) renderDoc();
+}
+
+/* ---- notifications (draft p.30) ---- */
+function notifs(){
+  const out=[], R=S.role;
+  S.drafts.forEach((d,i)=>{ if(d.stage!=="draft") return; const st=stats(d);
+    if(R==="entry"){
+      const miss=st.real.filter(f=>{ const fl=flagOf(d,f); return fl && fl.type==="Missing information" && f.state!=="override"; });
+      if(miss.length) out.push({tab:"queue", icon:"alert", text:`Missing information on ${d.id}: ${miss.map(f=>f.n).join(", ")}`, go:i});
+      const pend=st.entryOpen.length-miss.length; if(pend>0) out.push({tab:"queue", icon:"list", text:`${pend} AI-proposed value${pend>1?"s":""} to confirm on ${d.id}`, go:i});
+      if(d.kind==="request" && !st.entryOpen.length) out.push({tab:"queue", icon:"check", text:`${d.id} is ready to register in LIMS`, go:i});
+    }
+    if(isApprover() && d.kind!=="request"){
+      const mine=st.tmOpen.filter(f=>f.decision!=="escalate" || R==="lm");
+      if(mine.length) out.push({tab:"queue", icon:"flag", text:`${mine.length} flagged result${mine.length>1?"s":""} awaiting your expert review on ${d.id}`, go:i});
+      if(!st.entryOpen.length && !st.tmOpen.length) out.push({tab:"queue", icon:"check", text:`${d.id} is ready for ${d.expert?"approval after expert review":"routine approval"}`, go:i});
+    }
+  });
+  if(["hod","lm","qhse"].includes(R)) S.templates.filter(t=>t.status==="pending").forEach(t=>out.push({tab:"templates", icon:"layout", text:`Template awaiting approval: ${t.name}`}));
+  if(R==="qhse") S.alerts.filter(a=>a.live && !a.seen).forEach(a=>out.push({tab:"security", icon:"triangle", text:a.title}));
+  return out;
+}
+function renderBell(){
+  const n=notifs(); const c=$("#bellCount");
+  c.hidden=!n.length; c.textContent=n.length; $("#bellBtn").setAttribute("aria-label", `Notifications, ${n.length} new`);
+  const p=$("#notifPanel");
+  p.innerHTML = `<h2>Notifications</h2>${n.length?`<ul>${n.map((x,i)=>`<li>${svg(x.icon,16)}<span>${esc(x.text)}<br><button type="button" data-ni="${i}">Open</button></span></li>`).join("")}</ul>`:`<p class="muted small" style="margin:8px 12px 12px">You're all caught up.</p>`}`;
+  p.querySelectorAll("[data-ni]").forEach(b=>b.addEventListener("click",()=>{ const x=n[+b.dataset.ni]; S.tab=x.tab; if(x.go!=null) S.sel=x.go; save(); toggleBell(false); renderStaff(); }));
+}
+function toggleBell(open){ const p=$("#notifPanel"), b=$("#bellBtn"); const o=open==null?p.hidden:open; p.hidden=!o; b.setAttribute("aria-expanded",String(o)); }
+
+/* ---- work queue ---- */
+function renderQueuePage(){
+  if(S.sel>=S.drafts.length) S.sel=0;
+  $("#staffPane").innerHTML = `<div class="staffgrid">
+    <div class="col-left" style="display:grid;gap:18px"><div class="panel q-panel"><header><h2>Report drafts</h2></header><ul class="queue" id="queue"></ul></div>
+      <div class="panel s-panel"><header><h2>Security controls</h2></header><div class="pb"><ul class="sec-list" id="secList"></ul></div></div></div>
+    <div class="panel" id="draft"></div>
+    <div class="panel a-panel"><header><h2>Audit trail</h2><span class="spacer"></span><span class="kind k-sec">append-only</span></header><ol class="audit" id="audit"></ol></div>
+  </div>`;
+  $("#queue").innerHTML = S.drafts.map((d,i)=>{ const st=stats(d);
+    const c = d.stage==="issued"?`<span class="st ok">Issued</span>`: d.stage==="registered"?`<span class="st ok">Registered</span>`: st.entryOpen.length?`<span class="st flag">${st.entryOpen.length} to confirm</span>`: st.tmOpen.length?`<span class="st ovr">${st.tmOpen.length} for expert review</span>`: d.kind==="request"?`<span class="st ovr">Ready to register</span>`:`<span class="st ovr">Ready for ${d.expert?"approval":"routine approval"}</span>`;
+    return `<li><button type="button" data-i="${i}" aria-current="${i===S.sel}"><span class="no">${esc(d.id)}</span><span class="ty">${esc(d.kind==="request"?"Customer request · sample intake":d.type+" · "+d.dept)}</span>${c}</button></li>`; }).join("");
+  $("#queue").querySelectorAll("button").forEach(b=>b.addEventListener("click",()=>{ S.sel=+b.dataset.i; save(); renderStaff(); }));
+  const sec=[["Role-based access",`${ROLES[S.role].short}: ${ROLES[S.role].perms.join(", ")}.`],["Multi-factor authentication","Required to approve, amend or revoke."],["Digital signatures","Approver certificate plus AHSL's organisational key (HSM)."],["Append-only audit trail","Every action, hash-chained."],["Encryption","AES-256 at rest, TLS in transit (concept)."],["Unusual-change alerts","To the QHSE Manager and administration officer."],["Backup & recovery",`Daily encrypted backups in the UAE; last test ${fmtDate(todayISO())}.`]];
+  $("#secList").innerHTML = sec.map(([b,s])=>`<li><span class="ic pass" aria-hidden="true">${svg("check",12)}</span><span><b>${esc(b)}</b><span>${esc(s)}</span></span></li>`).join("");
+  renderDraft();
+  renderAudit();
+}
+function renderAudit(){
+  const d=S.drafts[S.sel]; const list=S.audit.filter(e=>e.rid===d.id).slice().reverse();
+  const kl={ai:["k-ai","AI"],user:["k-user","User"],sys:["k-sys","System"],sec:["k-sec","Security"],alert:["k-alert","Alert"]};
+  $("#audit").innerHTML = list.map(e=>`<li class="${e.kind==="alert"?"alert":""}"><div class="a-top"><span class="kind ${kl[e.kind][0]}">${kl[e.kind][1]}</span><span class="actor">${esc(e.actor)}</span><time>${esc(e.t.slice(11))}</time></div><div><b>${esc(e.action)}</b>${e.detail?` — ${esc(e.detail)}`:""}</div><div class="hash">#${e.h.slice(0,12)}</div></li>`).join("") || `<li>No entries yet.</li>`;
+}
+function fieldRow(d, f){
+  if(f.calc) return `<tr><td><div class="fname">${esc(f.n)}</div><div class="fsrc">computed by LIMS</div></td><td><span class="val">${esc(calcVal(d,f))}</span></td><td></td></tr>`;
+  const fl=flagOf(d,f), locked=d.stage!=="draft", R=S.role, editing=d._edit===f.k && !locked;
+  const anomaly = fl && fl.kind==="anomaly", entryFlag = fl && fl.kind==="entry" && f.state!=="override";
+  let status;
+  if(entryFlag) status=`<span class="st flag">${svg("flag",12)} ${esc(fl.type)}</span>`;
+  else if(anomaly && f.state==="proposed") status=`<span class="st flag">${svg("flag",12)} ${esc(fl.type)}</span>`;
+  else if(anomaly && f.decision==="accept") status=`<span class="st ok">Accepted in expert review</span>`;
+  else if(anomaly && f.decision==="escalate") status=`<span class="st flag">Escalated to the Lab Manager</span>`;
+  else if(anomaly) status=`<span class="st ovr">Awaiting expert review</span>`;
+  else if(f.state==="override") status=`<span class="st ovr">Kept despite AI warning</span>`;
+  else if(f.state==="corrected") status=`<span class="st ok">Corrected</span>`;
+  else if(f.state==="confirmed") status=`<span class="st ok">Confirmed</span>`;
+  else status=`<span class="st pend">AI-proposed</span>`;
+  const why = fl && (entryFlag || anomaly) ? `<div class="why"><b>${esc(fl.type)}.</b> ${esc(fl.text)}${anomaly?` <i>Expert review by the Head of Department or Lab Manager.</i>`:""}</div>` : f.state==="override" && fl ? `<div class="why info"><b>Kept by ${esc(f.by||"data entry")}.</b> ${esc(fl.text)}</div>`:"";
+  const viewBtn=`<button class="ghost" data-act="view" data-k="${f.k}" aria-label="View ${esc(f.n)} in its source document">${svg("eye",16)} View</button>`;
+  let acts=viewBtn;
+  if(!locked && R==="entry"){
+    if(entryFlag) acts+=`<button class="ghost ok" data-act="keep" data-k="${f.k}">${f.rule==="req"?"Confirm blank":f.rule==="dup"?"Not a duplicate":"Confirm as is"}</button><button class="ghost fix" data-act="edit" data-k="${f.k}">Correct</button>`;
+    else if(f.state==="proposed") acts+=`<button class="ghost ok" data-act="ok" data-k="${f.k}">Confirm</button><button class="ghost fix" data-act="edit" data-k="${f.k}">Correct</button>`;
+    else acts+=`<button class="ghost" data-act="edit" data-k="${f.k}">Edit</button>`;
+  }
+  const canDecide = isApprover() && (f.decision!=="escalate" || can("escalated"));
+  if(!locked && canDecide && anomaly && f.state!=="proposed" && f.decision!=="accept"){
+    acts+=`<button class="ghost ok" data-act="accept" data-k="${f.k}">Accept</button><button class="ghost fix" data-act="tmedit" data-k="${f.k}">Correct</button>${f.decision!=="escalate"&&R==="hod"?`<button class="ghost" data-act="escalate" data-k="${f.k}">Escalate</button>`:""}`;
+  }
+  const fix = editing ? `<div class="fixbox"><label class="sr" for="fix-${f.k}">New value for ${esc(f.n)}</label><input id="fix-${f.k}" value="${esc((fl && f.suggest && f.v===f.orig) ? f.suggest : (f.v||f.suggest||""))}"><button class="ghost fix" data-act="${d._editMode==="tm"?"tmsave":"save"}" data-k="${f.k}">Save</button><button class="ghost" data-act="cancel">Cancel</button></div>${f.suggest?`<div class="fsrc">AI suggestion: ${esc(f.suggest)}</div>`:""}` : "";
+  const val = f.v ? `<span class="val">${esc(f.v)}</span>` : `<span class="val missing">missing</span>`;
+  const was = f.v!==f.orig ? `<div class="was">${esc(f.orig||"blank")}</div>` : "";
+  const conf = f.conf!=null ? `<div class="conf ${f.conf<.8?"low":""}"><span class="mini"><span style="width:${Math.round(f.conf*100)}%"></span></span>Read confidence ${Math.round(f.conf*100)}%</div>` : "";
+  const cls = entryFlag || (anomaly && f.decision!=="accept") ? "flag" : f.state==="override" ? "override" : "";
+  return `<tr class="${cls}"><td><div class="fname">${esc(f.n)}</div><div class="fsrc">from <button type="button" class="linkbtn" data-act="view" data-k="${f.k}">${esc(f.src==="SCAN"?"form photo":f.src)}</button></div></td><td>${val}${was}${conf}${why}</td><td>${status}<div style="margin-top:6px"><span class="acts">${acts}</span></div>${fix}</td></tr>`;
+}
+function renderDraft(){
+  const d=S.drafts[S.sel], st=stats(d), R=S.role, locked=d.stage!=="draft", isReq=d.kind==="request";
+  const rows=d.fields.map(f=>fieldRow(d,f)).join("");
+  const ai = locked ? "" : st.entryOpen.length
+    ? `<div class="ai-summary" style="background:var(--warn-bg)"><span class="ai-tag">AI</span><span>${st.flags.length} flag${st.flags.length===1?"":"s"} raised. ${st.entryOpen.length} AI-proposed value${st.entryOpen.length>1?"s":""} still need checking against the ${isReq?"form photo":"source document"}. The AI only suggests; a person decides.</span></div>`
+    : st.tmOpen.length ? `<div class="ai-summary" style="background:var(--info-bg)"><span class="ai-tag">AI</span><span>All values confirmed. ${st.tmOpen.length} flagged result${st.tmOpen.length>1?"s":""} need${st.tmOpen.length>1?"":"s"} expert review by the Head of Department or Lab Manager: accept, correct or escalate.</span></div>`
+    : `<div class="ai-summary" style="background:var(--ok-bg)"><span class="ai-tag">AI</span><span>${isReq?"All values confirmed. Register the sample in LIMS.":"All values confirmed and every flag decided. Ready for approval."}</span></div>`;
+  const roleNote = !locked && R!=="entry" && !(isApprover() && !isReq) ? `<div class="ro-note" style="margin:12px 20px 0">${svg("lock",16)}<span>${esc(ROLES[R].short)} can view this draft but not change it.</span></div>` : "";
+  const okAll = !locked && R==="entry" && st.real.some(f=>f.state==="proposed" && !flagOf(d,f)) ? `<button class="ghost ok" id="confirmAll">${svg("check",16)} Confirm all unflagged values</button><span class="muted small">after comparing them with the ${isReq?"form photo":"source documents"}</span>` : `<span class="muted small">${locked?"Locked. Every change is in the audit trail.":"Use View to compare any value with its source."}</span>`;
+  const gi = ok => `<span class="ic ${ok?"pass":"fail"}" aria-hidden="true">${ok?svg("check",12):svg("x",12)}</span>`;
+  const gA=st.entryOpen.length===0, gB=st.tmOpen.length===0, gR=isApprover();
+  let bottom="";
+  if(isReq){
+    if(!locked) bottom=`<div class="approve"><h3 style="font-family:var(--sans);font-size:16px;font-weight:700;margin:0">Register the sample</h3>
+      <ul class="gate"><li>${gi(gA)}<span>Every field checked against the form photo${gA?"":` <small class="muted">(${st.entryOpen.length} open)</small>`}</span></li></ul>
+      <div class="approve-actions"><button class="btn" id="registerBtn" ${gA&&R==="entry"?"":"disabled"}>${svg("check",16)} Register in LIMS</button><span class="fsrc" style="font-family:var(--sans)">Creates the Sample ID and links the request to the customer's single record across all five branches.</span></div></div>`;
+    else bottom=`<div class="approve"><div class="ro-note" style="background:var(--ok-bg)">${svg("check",16)}<span>Registered as <b class="val">${esc(d.sampleId)}</b> and linked to ${esc(d.fields.find(f=>f.k==="cust").v)}'s customer record. Sent to ${esc(d.fields.find(f=>f.k==="dept").v)} for testing.</span></div></div>`;
+  } else if(!locked){
+    bottom=`<div class="approve"><h3 style="font-family:var(--sans);font-size:16px;font-weight:700;margin:0">Approval</h3>
+      ${d.expert?`<div class="classify" style="background:var(--info-bg)"><b style="color:var(--info)">Flagged report → expert review</b><span>By the Head of Department or Lab Manager.</span></div>`:`<div class="classify" style="background:var(--ok-bg)"><b style="color:var(--ok)">Routine report (no flagged results) → normal approval</b><span>By the Head of Department or Lab Manager.</span></div>`}
+      <ul class="gate"><li>${gi(gA)}<span>All AI-proposed values confirmed by Data Entry${gA?"":` <small class="muted">(${st.entryOpen.length} open)</small>`}</span></li>
+      ${d.expert?`<li>${gi(gB)}<span>Every flagged result decided in expert review${gB?"":` <small class="muted">(${st.tmOpen.length} open)</small>`}</span></li>`:""}
+      <li>${gi(gR)}<span>Signed in as Head of Department or Lab Manager${gR?"":` <small class="muted">(sign in as one)</small>`}</span></li></ul>
+      <div class="approve-actions"><button class="btn gold" id="approveBtn" ${gA&&gB&&gR?"":"disabled"}>${svg("pen",16)} Approve, sign and issue</button><span class="fsrc" style="font-family:var(--sans)">${gA&&gB&&gR?"Asks for your MFA code. Data Entry can't approve, and the AI never approves.":"Unlocks when every item above is ticked."}</span></div></div>`;
+  } else {
+    const rec=S.reg[d.id], v=curV(rec);
+    bottom=`<div class="issued"><button type="button" class="qrbox" id="qrBox" aria-label="QR code for ${esc(d.id)}. Activate to simulate a scan.">${QR.svg(qrLink(d.id,v))}</button>
+      <div style="display:grid;gap:8px"><span class="badge" style="background:var(--ok-bg);color:var(--ok);justify-self:start">${svg("check",14)} Issued and registered</span>
+      <div><span class="val">${esc(d.id)}</span> · revision ${v.rev} · ${fmtDate(v.issued)} · approved by ${esc(v.details.approver)}</div>
+      <div><span class="fsrc" style="font-family:var(--sans)">Fingerprint (SHA-256)</span><div class="fp">${fpCode(v.hash)}</div></div>
+      <div class="btn-row"><button class="btn sm" id="openVerify">Scan / open verification page</button></div>
+      <div class="next muted small">The QR code carries AHSL's signature and the report reference. The signed PDF goes to the customer, who submits it to the regulator.</div></div></div>`;
+  }
+  $("#draft").innerHTML = `<div class="draft-head">
+      <div class="top"><span class="val" style="font-size:13px">${esc(d.id)}</span><span class="st ${locked?"ok":"pend"}">${isReq?(locked?"Registered":"Request · not registered"):(locked?"Issued":"Draft in LIMS")}</span><span class="spacer"></span><span class="fsrc">${esc(d.dept||"Front desk")} · ${esc(d.branch)}</span></div>
+      <h2>${esc(d.type)}</h2>
+      ${isReq?"":`<dl class="kv"><div><dt>Standard</dt><dd>${esc(d.standard)}</dd></div><div><dt>Customer</dt><dd>${esc(d.customer)}</dd></div><div><dt>Project</dt><dd>${esc(d.project)}</dd></div><div><dt>Sample</dt><dd>${esc(d.sample)}</dd></div></dl>`}
+      <div class="sources"><span class="fsrc" style="align-self:center">Sources read by the AI:</span>${d.sources.map(s=>`<span class="src">${esc(s)}</span>`).join("")}</div></div>
+    ${ai}${roleNote}
+    <div style="overflow-x:auto;margin-top:8px"><table class="fields"><thead><tr><th scope="col">Field</th><th scope="col">Value</th><th scope="col">Status / action</th></tr></thead><tbody>${rows}</tbody></table></div>
+    <div class="tbl-foot">${okAll}</div>${bottom}`;
+  bindDraft(d);
+}
+function applyAction(d, f, act, nv){
+  const R=ROLES[S.role], who=`${R.name} (${R.short})`;
+  if(d.stage!=="draft") return false;
+  const entryActs=["ok","keep","save"], tmActs=["accept","tmsave","escalate"];
+  if(entryActs.includes(act) && !can("enter")) return false;
+  if(tmActs.includes(act) && (!can("review") || (f.decision==="escalate" && !can("escalated")))) return false;
+  if(act==="ok"){ f.state="confirmed"; log(d.id,who,"user","Value confirmed",`${f.n} = ${f.v||"blank"} (checked against ${f.src==="SCAN"?"form photo":f.src})`); }
+  if(act==="keep"){ const fl=flagOf(d,f); f.state="override"; f.by=R.name; log(d.id,who,"user","Flag overridden",`${f.n} kept as “${f.v||"blank"}” despite: ${fl?fl.type:"warning"}.`); }
+  if(act==="accept"){ f.decision="accept"; log(d.id,who,"user","Review decision: accept",`${f.n} = ${f.v} accepted as a valid result.`); }
+  if(act==="escalate"){ f.decision="escalate"; log(d.id,who,"user","Review decision: escalate",`${f.n} escalated to the Laboratory Manager.`); raiseAlert(`Result escalated on ${d.id}`, `${f.n} (${f.v}) was escalated to the Laboratory Manager for investigation.`, "Medium"); }
+  if(act==="save"||act==="tmsave"){
+    nv=String(nv||"").trim(); if(!nv){ toast("Enter a value, or use Confirm to keep it blank."); return false; }
+    const old=f.v; f.v=nv;
+    const fl=flagOf(d,f);
+    if(act==="save"){ f.state = fl && fl.kind==="entry" ? "proposed" : "corrected"; f.decision=null; }
+    else { f.state="corrected"; f.decision = fl ? null : "correct"; }
+    log(d.id,who,"user",act==="tmsave"?"Review decision: correct":"Value corrected",`${f.n}: “${old||"blank"}” → “${nv}”`);
+    const a=num(old), c=num(nv);
+    if(!isNaN(a)&&!isNaN(c)&&a!==0&&Math.abs(c-a)/Math.abs(a)>0.25 && !/°F|ksi/i.test(old)){
+      raiseAlert(`Unusual change on ${d.id}`, `${f.n} changed by ${Math.round((c-a)/a*100)}% (${old} → ${nv}) by ${R.name}.`, "Medium");
+      toast(`Unusual change on ${f.n} (${Math.round((c-a)/a*100)}%). The QHSE Manager was alerted.`, true);
+    }
+    log(d.id,"AI Agent","ai","Quality check re-run", fl?`${f.n} still flagged: ${fl.type}.`:`${f.n} passes all checks.`);
+  }
+  save(); return true;
+}
+function bindDraft(d){
+  $("#draft").querySelectorAll("[data-act]").forEach(b=>b.addEventListener("click",()=>{
+    const f=d.fields.find(x=>x.k===b.dataset.k), act=b.dataset.act;
+    if(act==="view"){ openDoc(d, f.k); return; }
+    if(act==="edit"){ d._edit=f.k; d._editMode="entry"; renderStaff(); const i=$("#fix-"+f.k); i&&(i.focus(),i.select()); return; }
+    if(act==="tmedit"){ d._edit=f.k; d._editMode="tm"; renderStaff(); const i=$("#fix-"+f.k); i&&(i.focus(),i.select()); return; }
+    if(act==="cancel"){ d._edit=null; renderStaff(); return; }
+    if(act==="save"||act==="tmsave"){ if(!applyAction(d,f,act,$("#fix-"+f.k).value)) return; d._edit=null; }
+    else applyAction(d,f,act);
+    renderStaff();
+  }));
+  const fx=$("#draft .fixbox input"); if(fx) fx.addEventListener("keydown",e=>{ if(e.key==="Enter") $("#draft .fixbox [data-act$=save]").click(); if(e.key==="Escape") $("#draft [data-act=cancel]").click(); });
+  const ca=$("#confirmAll"); if(ca) ca.addEventListener("click",()=>{ const list=d.fields.filter(f=>!f.calc && f.state==="proposed" && !flagOf(d,f)); list.forEach(f=>f.state="confirmed"); const an=d.fields.filter(f=>!f.calc && f.state==="proposed" && flagOf(d,f) && flagOf(d,f).kind==="anomaly"); log(d.id,`${ROLES[S.role].name} (${ROLES[S.role].short})`,"user","Values confirmed",`${list.length} values checked against the source documents: ${list.map(f=>f.n).join(", ")}.`); save(); renderStaff(); if(an.length) toast(`Flagged values (${an.map(f=>f.n).join(", ")}) need individual confirmation.`); });
+  const rb=$("#registerBtn"); if(rb && !rb.disabled) rb.addEventListener("click",()=>{ S.scanCount=(S.scanCount||0)+1; d.sampleId=`SMP-26-${119300+S.scanCount}`; d.stage="registered"; log(d.id,`${ROLES[S.role].name} (${ROLES[S.role].short})`,"user","Sample registered in LIMS",`Sample ID ${d.sampleId}, linked to the customer record for ${d.fields.find(f=>f.k==="cust").v} (one record across all five branches). Sent to ${d.fields.find(f=>f.k==="dept").v}.`); save(); renderStaff(); toast(`Registered as ${d.sampleId}.`); });
+  const ab=$("#approveBtn"); if(ab && !ab.disabled) ab.addEventListener("click",()=>openMfa({title:"Approve and sign "+d.id, text:`Approving signs revision 0 of <b>${esc(d.id)}</b>: the fingerprint is signed with AHSL's private key and registered. Enter the 6-digit code from your authenticator. <em>(Demo: any 6 digits.)</em>`, onOk:()=>issueDraft(d)}));
+  const ov=$("#openVerify"), qb=$("#qrBox"); const go=()=>{ const v=curV(S.reg[d.id]); location.hash="#v-"+d.id+"-R"+v.rev+"-"+v.sig.slice(0,16); };
+  if(ov) ov.addEventListener("click",go); if(qb) qb.addEventListener("click",go);
+}
+function issueDraft(d){
+  const R=ROLES[S.role], who=`${R.name} (${R.short})`;
+  const results = d.fields.filter(f=>!f.calc && ["c1","c2","c3","re","rm","agt","mc","ll","pl"].includes(f.k)).map(f=>`${f.n} ${f.v}`).join("; ");
+  const rec={type:d.type, dept:d.dept, versions:[V(0,todayISO(),{customer:d.customer, project:d.project, sample:d.sample, results, approver:`${R.name}, ${R.short}`})]};
+  rec.versions[0].hash=sha256(canon(d.id,rec,rec.versions[0],results)); rec.versions[0].sig=signOf(rec.versions[0].hash);
+  S.reg[d.id]=rec; d.stage="issued"; d._edit=null;
+  log(d.id,who,"sec","Approved and signed","Approver certificate signature applied after MFA.");
+  log(d.id,"Fingerprint & QR service","sys","Registered",`SHA-256 ${rec.versions[0].hash.slice(0,16)}… signed with AHSL's private key (HSM) and registered with status Valid. QR code with signature and reference generated.`);
+  log(d.id,"LIMS","sys","Released","Released to invoicing and delivery.");
+  save(); renderStaff(); renderSamples(); toast(`${d.id} approved, signed and registered.`);
+}
+
+/* ---- MFA (draft p.31, 76) ---- */
+let mfaCb=null, mfaFails=0;
+function openMfa({title, text, onOk}){
+  lastFocus=document.activeElement; mfaCb=onOk; mfaFails=0;
+  $("#mfaTitle").textContent=title; $("#mfaText").innerHTML=text; $("#otp").value=""; $("#otpErr").textContent="";
+  $("#mfaModal").classList.add("open"); setTimeout(()=>$("#otp").focus(),30);
+}
+function closeMfa(){ $("#mfaModal").classList.remove("open"); mfaCb=null; if(lastFocus&&document.contains(lastFocus)) lastFocus.focus(); }
+$("#otpCancel").addEventListener("click",closeMfa);
+$("#otp").addEventListener("keydown",e=>{ if(e.key==="Enter") $("#otpOk").click(); });
+$("#otpOk").addEventListener("click",()=>{
+  if(!/^\d{6}$/.test($("#otp").value)){
+    mfaFails++; $("#otpErr").textContent = mfaFails>=3 ? "Too many failed attempts. The QHSE Manager has been alerted." : `That isn't a 6-digit code. Try again (${3-mfaFails} attempt${3-mfaFails===1?"":"s"} left).`;
+    if(mfaFails>=3){ raiseAlert("Repeated failed approvals", `${ROLES[S.role].name} failed MFA three times while signing.`, "High"); save(); setTimeout(closeMfa,1200); }
+    return;
+  }
+  const cb=mfaCb; $("#mfaModal").classList.remove("open"); mfaCb=null; cb&&cb();
+});
+
+/* ---- generic form modal ---- */
+function openForm(title, html, onSubmit){
+  lastFocus=document.activeElement;
+  $("#formTitle").textContent=title; $("#formBody").innerHTML=html; $("#formModal").classList.add("open");
+  const form=$("#formBody form"); setTimeout(()=>{ const f=form.querySelector("input,select,textarea"); f&&f.focus(); },30);
+  form.addEventListener("submit",e=>{ e.preventDefault(); if(onSubmit(form)!==false) closeForm(); });
+  form.querySelector("[data-cancel]").addEventListener("click",closeForm);
+}
+function closeForm(){ $("#formModal").classList.remove("open"); if(lastFocus&&document.contains(lastFocus)) lastFocus.focus(); }
+
+/* ---- issued reports: amend / revoke (draft p.62, 80) ---- */
+function renderIssuedPage(){
+  const rows=Object.entries(S.reg).map(([ref,rec])=>{ const v=curV(rec); return {ref,rec,v,st:verStatus(rec,v)}; });
+  const sel=S.issuedSel && S.reg[S.issuedSel] ? S.issuedSel : rows[0].ref;
+  $("#staffPane").innerHTML = `<div class="stack">
+    ${can("lookup") && !can("amend") ? `<div class="ro-note">${svg("search",16)}<span>${esc(ROLES[S.role].short)} can look up any report's status to answer customer questions. Only the Head of Department or Lab Manager can amend or revoke.</span></div>`:""}
+    <div class="panel"><header><h2>Issued reports (${rows.length})</h2></header><div class="tbl-wrap"><table class="data stackable">
+    <thead><tr><th scope="col">Report</th><th scope="col">Type</th><th scope="col">Customer</th><th scope="col">Version</th><th scope="col">Status</th><th scope="col"><span class="sr">Actions</span></th></tr></thead>
+    <tbody>${rows.map(r=>`<tr${r.ref===sel?' style="background:var(--sky)"':""}><td data-l="Report"><span class="val">${esc(r.ref)}</span></td><td data-l="Type">${esc(r.rec.type)}</td><td data-l="Customer">${esc(r.v.details.customer)}</td><td data-l="Version">${r.v.rev}</td><td data-l="Status">${chip(r.st)}</td>
+      <td><span class="acts"><button class="ghost" data-isel="${esc(r.ref)}">Details</button>${can("amend")&&!r.rec.revoked&&r.st!=="altered"?`<button class="ghost fix" data-amend="${esc(r.ref)}">${svg("pen",16)} Amend</button>`:""}${can("revoke")&&!r.rec.revoked?`<button class="ghost" style="color:var(--bad);border-color:color-mix(in srgb,var(--bad) 45%,transparent)" data-revoke="${esc(r.ref)}">${svg("ban",16)} Revoke</button>`:""}</span></td></tr>`).join("")}</tbody></table></div></div>
+    <div id="iDetail"></div></div>`;
+  $("#staffPane").querySelectorAll("[data-isel]").forEach(b=>b.addEventListener("click",()=>{ S.issuedSel=b.dataset.isel; save(); renderStaff(); $("#iDetail").scrollIntoView({behavior:"smooth",block:"nearest"}); }));
+  $("#staffPane").querySelectorAll("[data-amend]").forEach(b=>b.addEventListener("click",()=>amendFlow(b.dataset.amend)));
+  $("#staffPane").querySelectorAll("[data-revoke]").forEach(b=>b.addEventListener("click",()=>revokeFlow(b.dataset.revoke)));
+  const rec=S.reg[sel], v=curV(rec), vc=S.vlog.filter(x=>x.ref===sel).length;
+  $("#iDetail").innerHTML = `<div class="panel"><header><h2>${esc(sel)}</h2><span class="spacer"></span>${chip(verStatus(rec,v))}</header><div class="pb detail-grid">
+    <div style="display:grid;gap:12px"><dl class="meta"><div><dt>Customer</dt><dd>${esc(v.details.customer)}</dd></div><div><dt>Project</dt><dd>${esc(v.details.project)}</dd></div><div><dt>Sample</dt><dd>${esc(v.details.sample)}</dd></div><div><dt>Current version</dt><dd>${v.rev} · ${fmtDate(v.issued)}</dd></div><div><dt>Approved by</dt><dd>${esc(v.details.approver)}</dd></div><div><dt>Verified</dt><dd>${vc} time${vc===1?"":"s"}</dd></div></dl>
+    <div><p class="subh">Versions</p><ol class="timeline">${rec.versions.map(x=>`<li class="${x.rev===v.rev?"cur":""}"><time>${fmtDate(x.issued)}</time><b>Version ${x.rev}</b> ${chip(verStatus(rec,x))}<div class="muted small">${esc(x.note)} · SHA-256 ${x.hash.slice(0,16)}…</div></li>`).join("")}${rec.revoked?`<li><time>${fmtDate(rec.revoked.date)}</time><b>Revoked</b><div class="muted small">${esc(rec.revoked.reason)}</div></li>`:""}</ol></div></div>
+    <div><div class="qr-tile">${QR.svg(qrLink(sel,v))}</div><div class="fsrc" style="margin-top:6px;font-family:var(--sans)">QR for version ${v.rev}</div></div></div></div>`;
+}
+function amendFlow(ref){
+  const rec=S.reg[ref], v=curV(rec);
+  openForm(`Amend ${ref}`, `<form novalidate style="display:grid;gap:12px">
+    <p class="muted small" style="margin:0">An amendment never overwrites the report. Version ${v.rev+1} gets its own fingerprint and QR code, and version ${v.rev} will show as Amended.</p>
+    <div><label for="amWhat" style="font-weight:600;font-size:14px;display:block;margin-bottom:6px">What needs correcting</label><select class="t" id="amWhat"><option value="sample">Sample description</option><option value="project">Project name</option><option value="results">Results (corrected in LIMS)</option></select></div>
+    <div><label for="amVal" style="font-weight:600;font-size:14px;display:block;margin-bottom:6px">Corrected value</label><input class="t" id="amVal" value="${esc(v.details.sample)}" aria-describedby="amErr"></div>
+    <div><label for="amWhy" style="font-weight:600;font-size:14px;display:block;margin-bottom:6px">Reason (recorded in the audit trail)</label><input class="t" id="amWhy" placeholder="e.g. typing error in sample depth" aria-describedby="amErr"></div>
+    <div class="field-err" id="amErr" role="alert"></div>
+    <div class="btn-row" style="justify-content:flex-end"><button class="ghost" type="button" data-cancel>Cancel</button><button class="btn sm" type="submit">Continue to MFA</button></div></form>`, form=>{
+      const what=$("#amWhat").value, val=$("#amVal").value.trim(), why=$("#amWhy").value.trim();
+      if(!val||!why){ $("#amErr").innerHTML=`${svg("alert",16)} Enter the corrected value and a reason.`; (!val?$("#amVal"):$("#amWhy")).focus(); return false; }
+      setTimeout(()=>openMfa({title:`Amend ${ref}`, text:`Creates version ${v.rev+1}, signs it with your certificate and marks version ${v.rev} as Amended. Enter your 6-digit code. <em>(Demo: any 6 digits.)</em>`, onOk:()=>{
+        const R=ROLES[S.role]; const nv=JSON.parse(JSON.stringify(v)); nv.rev=v.rev+1; nv.issued=todayISO(); nv.note=`Amended: ${why}`; nv.supersededBy=null; nv.fileHash=null; nv.limsResults=null;
+        if(what==="results") nv.results=val; else nv.details[what]=val; nv.details.approver=`${R.name}, ${R.short}`;
+        nv.hash=sha256(canon(ref,rec,nv,nv.results)); nv.sig=signOf(nv.hash); v.supersededBy=nv.rev; rec.versions.push(nv);
+        log(ref,`${R.name} (${R.short})`,"sec","Report amended",`Version ${nv.rev} created (${what}: ${val}). Reason: ${why}. Version ${v.rev} marked Amended.`);
+        log(ref,"Fingerprint & QR service","sys","Registered",`Version ${nv.rev} SHA-256 ${nv.hash.slice(0,16)}… registered; new QR code generated.`);
+        S.issuedSel=ref; save(); renderStaff(); toast(`${ref} version ${nv.rev} issued. Version ${v.rev} now shows as Amended.`);
+      }}),60);
+    });
+  $("#amWhat").addEventListener("change",e=>{ const k=e.target.value; $("#amVal").value = k==="results"?v.results:v.details[k]; });
+}
+function revokeFlow(ref){
+  openForm(`Revoke ${ref}?`, `<form novalidate style="display:grid;gap:12px">
+    <p class="muted small" style="margin:0">Every version of this report will show as <b>Revoked</b> to anyone who checks it. This can't be undone; a corrected report needs a new number.</p>
+    <div><label for="rvWhy" style="font-weight:600;font-size:14px;display:block;margin-bottom:6px">Reason (shown publicly)</label><input class="t" id="rvWhy" aria-describedby="rvErr" placeholder="e.g. withdrawn after a sample-handling nonconformity"></div>
+    <label class="attest"><input type="checkbox" id="rvOk"> <span>I understand that revoking can't be undone.</span></label>
+    <div class="field-err" id="rvErr" role="alert"></div>
+    <div class="btn-row" style="justify-content:flex-end"><button class="ghost" type="button" data-cancel>Cancel</button><button class="btn sm" type="submit" style="background:var(--bad);border-color:var(--bad)">Continue to MFA</button></div></form>`, ()=>{
+      const why=$("#rvWhy").value.trim();
+      if(!why){ $("#rvErr").innerHTML=`${svg("alert",16)} Enter the reason for revoking.`; $("#rvWhy").focus(); return false; }
+      if(!$("#rvOk").checked){ $("#rvErr").innerHTML=`${svg("alert",16)} Tick the box to confirm.`; $("#rvOk").focus(); return false; }
+      setTimeout(()=>openMfa({title:`Revoke ${ref}`, text:"Enter your 6-digit code to sign the revocation. <em>(Demo: any 6 digits.)</em>", onOk:()=>{
+        const R=ROLES[S.role]; S.reg[ref].revoked={date:todayISO(), reason:why, by:`${R.name}, ${R.short}`};
+        log(ref,`${R.name} (${R.short})`,"sec","Report revoked",`Reason: ${why}.`); S.issuedSel=ref; save(); renderStaff(); toast(`${ref} revoked.`);
+      }}),60);
+    });
+}
+
+/* ---- verification log (draft p.17, 58, 108) ---- */
+function renderLogPage(){
+  const since=new Date(); since.setDate(since.getDate()-30);
+  const L=S.vlog.filter(x=>new Date(x.t)>=since), portal=L.length, manual=S.manualInq, share=portal+manual?Math.round(portal/(portal+manual)*100):0;
+  const by=k=>{ const m={}; L.forEach(x=>m[x[k]]=(m[x[k]]||0)+1); return m; };
+  const res=by("result"), req=by("requester"), max=Math.max(1,...Object.values(res));
+  const reqLabels={regulator:"Regulator or authority", ahsl:"AHSL staff"};
+  $("#staffPane").innerHTML = `<div class="kpis">
+      <div class="kpi"><div class="k">Portal checks, 30 days</div><div class="v">${portal}</div><div class="s">QR scans, lookups and PDF checks</div></div>
+      <div class="kpi"><div class="k">Phone or email inquiries</div><div class="v">${manual}</div><div class="s">Logged by Sales / CRM</div></div>
+      <div class="kpi"><div class="k">Handled by the portal</div><div class="v">${share}%</div><div class="meter" role="img" aria-label="${share}% against a 70% target"><span style="width:${Math.min(100,share)}%"></span><i style="left:70%"></i></div><div class="s">Target 70% by end of 2029 (objective O5)</div></div>
+      <div class="kpi"><div class="k">Not found results</div><div class="v" style="color:var(--alt)">${res.notfound||0}</div><div class="s">Possible forged reports in circulation</div></div>
+    </div>
+    <div class="two-col">
+      <div class="panel"><header><h2>Checks by result</h2></header><div class="pb"><ul class="bars">${Object.keys(STATUS).map(k=>`<li><span>${chip(k)}</span><span class="track" aria-hidden="true"><span class="fill" style="width:${Math.round((res[k]||0)/max*100)}%;background:${STATUS[k].c}"></span></span><span class="n">${res[k]||0}</span></li>`).join("")}</ul></div></div>
+      <div class="panel"><header><h2>Who is checking</h2></header><div class="pb"><ul class="bars">${Object.keys(reqLabels).map(k=>`<li><span class="small">${reqLabels[k]}</span><span class="track" aria-hidden="true"><span class="fill" style="width:${Math.round((req[k]||0)/Math.max(1,...Object.values(req))*100)}%;background:var(--gold-strong)"></span></span><span class="n">${req[k]||0}</span></li>`).join("")}</ul>
+        ${can("inquiry")?`<div class="btn-row" style="margin-top:16px"><button class="ghost" id="addInq">${svg("chat",16)} Log a phone or email inquiry</button></div>`:""}</div></div>
+    </div>
+    <div class="panel" style="margin-top:18px"><header><h2>Latest verification requests</h2></header><div class="tbl-wrap"><table class="data stackable">
+      <thead><tr><th scope="col">Time</th><th scope="col">Reference</th><th scope="col">Requester</th><th scope="col">Channel</th><th scope="col">Result</th></tr></thead>
+      <tbody>${S.vlog.slice(-12).reverse().map(x=>`<tr><td data-l="Time">${new Date(x.t).toLocaleString()}</td><td data-l="Reference"><span class="val">${esc(x.ref)}</span></td><td data-l="Requester">${esc(reqLabels[x.requester])}</td><td data-l="Channel">${esc(x.via)}</td><td data-l="Result">${chip(x.result)}</td></tr>`).join("")}</tbody></table></div></div>`;
+  const ai=$("#addInq"); if(ai) ai.addEventListener("click",()=>{ S.manualInq++; log("SALES",`${ROLES[S.role].name} (${ROLES[S.role].short})`,"user","Manual inquiry logged","An authenticity question answered by phone or email."); save(); renderStaff(); toast("Inquiry logged."); });
+}
+
+/* ---- alerts, audit, rules (draft p.31, 57, 76) ---- */
+function renderSecurityPage(){
+  S.alerts.forEach(a=>a.seen=true); save();
+  const issuedRefs=Object.keys(S.reg).length;
+  const rules=[["Concrete cube strength","C40/50 at 28 days","38","56","MPa","range","BS EN 12390-3"],["Curing water temperature","—","18","22","°C","range + unit","BS EN 12390-2"],["Sampling date","—","—","—","date","mandatory","ISO/IEC 17025"],["Sample ID","—","—","—","—","duplicate (all branches)","AHSL procedure"],["Rebar yield strength Re","B500B","500","650","MPa","range + unit","BS 4449"],["Liquid limit","—","0","100","%","range","BS 1377-2"]];
+  const refsInAudit=[...new Set(S.audit.map(e=>e.rid))];
+  $("#staffPane").innerHTML = `<div class="kpis">
+      <div class="kpi"><div class="k">Open alerts</div><div class="v">${S.alerts.length}</div><div class="s">To the QHSE Manager and administration officer</div></div>
+      <div class="kpi"><div class="k">Issued reports with full audit trail</div><div class="v">100%</div><div class="s">${issuedRefs} of ${issuedRefs} (objective O4)</div></div>
+      <div class="kpi"><div class="k">Audit entries</div><div class="v">${S.audit.length}</div><div class="s">Append-only, hash-chained</div></div>
+      <div class="kpi"><div class="k">Last access-rights review</div><div class="v" style="font-size:22px">1 Nov 2026</div><div class="s">Reviewed quarterly</div></div>
+    </div>
+    <div class="two-col">
+      <div class="panel"><header><h2>Security alerts</h2></header><div class="pb"><ul class="sec-list">${S.alerts.slice().reverse().map(a=>`<li><span class="ic ${a.sev==="High"?"fail":"warn"}" aria-hidden="true">${svg(a.sev==="High"?"x":"excl",12)}</span><span><b>${esc(a.title)}</b> <span class="kind ${a.sev==="High"?"k-alert":"k-sys"}">${esc(a.sev)}</span><span>${esc(a.detail)} · ${new Date(a.t).toLocaleString()}</span></span></li>`).join("")}</ul></div></div>
+      <div class="panel"><header><h2>Validation rules</h2><span class="spacer"></span><span class="kind k-sys">maintained by QHSE</span></header><div class="tbl-wrap"><table class="data rule-tbl"><thead><tr><th scope="col">Parameter</th><th scope="col">Scope</th><th scope="col" class="num">Min</th><th scope="col" class="num">Max</th><th scope="col">Unit</th><th scope="col">Rule type</th><th scope="col">Standard</th></tr></thead><tbody>${rules.map(r=>`<tr>${r.map((c,i)=>`<td${i===2||i===3?' class="num"':""}>${esc(c)}</td>`).join("")}</tr>`).join("")}</tbody></table></div></div>
+    </div>
+    <div class="panel" style="margin-top:18px"><header><h2>Audit trail</h2><span class="spacer"></span><label class="sr" for="auF">Filter by record</label><select class="t" id="auF" style="width:auto;min-height:36px;padding:4px 8px;font-size:14px"><option value="">All records</option>${refsInAudit.map(r=>`<option${S.auF===r?" selected":""}>${esc(r)}</option>`).join("")}</select></header>
+      <div class="tbl-wrap"><table class="data stackable"><thead><tr><th scope="col">Time</th><th scope="col">Who</th><th scope="col">Action</th><th scope="col">Record</th><th scope="col">Detail</th><th scope="col">Hash</th></tr></thead><tbody>${S.audit.filter(e=>!S.auF||e.rid===S.auF).slice(-40).reverse().map(e=>`<tr><td data-l="Time"><time>${esc(e.t)}</time></td><td data-l="Who">${esc(e.actor)}</td><td data-l="Action"><b>${esc(e.action)}</b></td><td data-l="Record"><span class="val">${esc(e.rid)}</span></td><td data-l="Detail" class="small">${esc(e.detail||"")}</td><td data-l="Hash"><span class="hash val small">#${e.h.slice(0,10)}</span></td></tr>`).join("")}</tbody></table></div></div>`;
+  $("#auF").addEventListener("change",e=>{ S.auF=e.target.value; save(); renderStaff(); });
+  renderBell();
+}
+
+/* ---- templates (draft p.30, 74, 90) ---- */
+function renderTemplatesPage(){
+  const pend=S.templates.filter(t=>t.status==="pending"), std=S.templates.filter(t=>t.status==="standard");
+  const card=(t,actions)=>`<div class="tpl"><div class="btn-row" style="justify-content:space-between"><h3>${esc(t.name)}</h3>${t.status==="pending"?`<span class="tag-ai">AI DRAFT</span>`:`<span class="st ok">Standard template</span>`}</div>
+    ${t.req?`<div class="small muted">Client requirements: “${esc(t.req)}”</div>`:""}<ol>${t.sections.map(s=>`<li>${esc(s)}</li>`).join("")}</ol><div class="small muted">${t.status==="pending"?`Drafted by the help desk agent for ${esc(t.forWho||"a client")}`:`Approved by ${esc(t.by)}`}</div>${actions||""}</div>`;
+  $("#staffPane").innerHTML = `<div class="stack">
+    <div class="btn-row"><button class="ghost" id="tNew">${svg("chat",16)} Draft a new template with the help desk</button></div>
+    <div><h2 style="font-size:22px">Awaiting approval (${pend.length})</h2>${pend.length?`<div class="stack">${pend.map(t=>card(t,`<div class="btn-row"><button class="btn sm" data-tok="${t.id}">${svg("check",16)} Approve and save as standard</button><button class="ghost" data-tno="${t.id}">Reject</button></div>`)).join("")}</div>`:`<p class="muted">No drafts waiting. The help desk agent sends drafts here; it can't approve them itself.</p>`}</div>
+    <div><h2 style="font-size:22px">Standard templates (${std.length})</h2><div class="two-col">${std.map(t=>card(t)).join("")}</div></div></div>`;
+  $("#tNew").addEventListener("click",()=>{ openHelp(); hdTemplateStart(); });
+  $("#staffPane").querySelectorAll("[data-tok]").forEach(b=>b.addEventListener("click",()=>{ const t=S.templates.find(x=>x.id===b.dataset.tok); t.status="standard"; t.by=ROLES[S.role].short; log("TEMPLATES",`${ROLES[S.role].name} (${ROLES[S.role].short})`,"user","Template approved",t.name); save(); renderStaff(); toast("Saved as a standard template."); }));
+  $("#staffPane").querySelectorAll("[data-tno]").forEach(b=>b.addEventListener("click",()=>{ const i=S.templates.findIndex(x=>x.id===b.dataset.tno); const t=S.templates[i]; S.templates.splice(i,1); log("TEMPLATES",`${ROLES[S.role].name} (${ROLES[S.role].short})`,"user","Template rejected",t.name); save(); renderStaff(); toast("Draft rejected."); }));
+}
+
+/* ---- scan a form (draft p.69, 87, 90) ---- */
+function renderScanPage(){
+  $("#staffPane").innerHTML = `<div class="two-col"><div class="panel"><header><h2>Scan a form</h2></header><div class="pb">
+    <form id="scForm" novalidate style="display:grid;gap:14px">
+      <div><label for="scType" style="font-weight:600;font-size:14px;display:block;margin-bottom:6px">Document type</label><select class="t" id="scType"><option value="request">Customer request form (sample intake)</option><option value="results">Worksheet or equipment output (results)</option></select></div>
+      
+      <label class="drop" for="scFile"><span class="di" aria-hidden="true">${svg("camera",22)}</span><span><b>Take a photo or choose a file</b><small id="scHint">On a phone this opens the camera. Images or PDF.</small></span><input type="file" id="scFile" accept="image/*,application/pdf" capture="environment" class="sr"></label>
+      <div id="scPrev"></div>
+      <div class="field-err" id="scErr" role="alert"></div>
+      <div class="btn-row"><button class="btn" type="submit">${svg("scan",16)} Run AI extraction</button><button class="ghost" type="button" id="scSample">Use a sample photo</button></div>
+    </form><ol class="progress" id="scProg" aria-live="polite"></ol></div></div>
+    <div class="panel"><header><h2>What happens</h2></header><div class="pb"><ul class="sec-list">
+      <li><span class="ic pass" aria-hidden="true">${svg("check",12)}</span><span><b>Contact details removed first</b><span>Phone numbers and emails are stripped before the cloud AI model reads the form.</span></span></li>
+      <li><span class="ic pass" aria-hidden="true">${svg("check",12)}</span><span><b>Values are only proposed</b><span>Each value shows its read confidence and stays proposed until you confirm it.</span></span></li>
+      <li><span class="ic pass" aria-hidden="true">${svg("check",12)}</span><span><b>Checked before review</b><span>Missing values, wrong units, duplicates and registration errors are flagged with an explanation.</span></span></li>
+      <li><span class="ic pass" aria-hidden="true">${svg("check",12)}</span><span><b>Target speed</b><span>Under 30 seconds per document; at least 95% of fields correct.</span></span></li></ul></div></div></div>`;
+  let file=null;
+  $("#scFile").addEventListener("change",e=>{ file=e.target.files[0]||null; $("#scErr").textContent="";
+    $("#scPrev").innerHTML = file ? (file.type.startsWith("image/")?`<img class="preview-img" alt="Preview of ${esc(file.name)}" src="${URL.createObjectURL(file)}">`:`<p class="small">${svg("file",16)} ${esc(file.name)}</p>`) : ""; });
+  $("#scSample").addEventListener("click",()=>{ file={name:"tensile-form-photo.jpg", sample:true}; $("#scPrev").innerHTML=`<p class="small">${svg("file",16)} tensile-form-photo.jpg (sample)</p>`; $("#scErr").textContent=""; fireSubmit($("#scForm")); });
+  $("#scForm").addEventListener("submit",e=>{ e.preventDefault();
+    if(!file){ $("#scErr").innerHTML=`${svg("alert",16)} Take a photo or choose a file first, or use the sample photo.`; $("#scFile").focus(); return; }
+    const steps=["Uploading over an encrypted connection","Removing contact details","Reading the form (cloud AI model, zero-shot)","Mapping values to LIMS fields","Running validation checks"];
+    const P=$("#scProg"); let i=0; const btn=$("#scForm button[type=submit]"); btn.disabled=true;
+    const tick=()=>{ P.innerHTML=steps.map((s,j)=>`<li class="${j<i?"done":j===i?"now":""}">${j<i?`<span class="ic pass" aria-hidden="true">${svg("check",12)}</span>`:j===i?`<span class="spin" style="width:16px;height:16px"></span>`:`<span class="ic na" aria-hidden="true">${svg("minus",12)}</span>`}<span>${esc(s)}</span></li>`).join("");
+      if(i<steps.length){ i++; setTimeout(tick,350); } else finish(); };
+    const finish=()=>{
+      S.scanCount=(S.scanCount||0)+1; const isReq=$("#scType").value==="request";
+      const id = isReq ? `CR-${5540+S.scanCount}` : `DEMO-CIV-26-0${2070+S.scanCount}`;
+      const d = isReq ? reqDraft(id,[file.name]) : rebarDraft(id,[file.name]); d.stage="draft"; d.expert=false; if(file && !file.sample && file.type && file.type.startsWith("image/")) BLOBS[id]=URL.createObjectURL(file);
+      S.drafts.push(d); S.sel=S.drafts.length-1;
+      log(id,`${ROLES[S.role].name} (${ROLES[S.role].short})`,"user","Source document uploaded",`${isReq?"Customer request form":"Results document"}: ${file.name}`);
+      log(id,"AI Agent","ai",isReq?"Request form read":"Result data extraction",`Proposed ${d.fields.filter(f=>!f.calc).length} values from ${file.name}. Contact details removed before the AI call.`);
+      const fl=d.fields.filter(f=>flagOf(d,f)).length; log(id,"AI Agent","ai","Automated quality check",`${fl} issue${fl===1?"":"s"} flagged.`);
+      S.tab="queue"; save(); renderStaff(); toast(`Draft ${id} created from ${file.name}. Confirm the proposed values.`);
+    };
+    tick();
+  });
+}
+
+/* ================= document viewer (from the previous version) ================= */
+let DV=null, lastFocus=null;
+function openDoc(d, k){ const f=d.fields.find(x=>x.k===k); if(!f) return; if(!DV) lastFocus=document.activeElement; DV={id:d.id, src:srcKey(f), k, editing:false}; $("#docModal").classList.add("open"); renderDoc();
+  setTimeout(()=>{ const t=$("#docPaper mark.target"); t&&t.scrollIntoView({block:"center"}); const b=$("#docSide .docacts button:not([disabled])"); (b||$("#docClose")).focus(); },30); }
+function closeDoc(){ $("#docModal").classList.remove("open"); DV=null; if(lastFocus&&document.contains(lastFocus)) lastFocus.focus(); }
+function renderDoc(){
+  if(!DV) return;
+  const d=S.drafts.find(x=>x.id===DV.id), docs=docsFor(d), doc=docs[DV.src]||Object.values(docs)[0], R=S.role;
+  const real=d.fields.filter(x=>!x.calc), f=d.fields.find(x=>x.k===DV.k);
+  $("#docTabs").innerHTML=Object.entries(docs).map(([key,dd])=>`<button type="button" data-doc="${key}" aria-pressed="${key===DV.src}">${esc(dd.file)}</button>`).join("");
+  if(doc){
+    const lines=doc.lines.map(l=>{
+      if(l.startsWith("#")) return `<div class="ln h">${esc(l.slice(1))}</div>`;
+      const html=esc(l).replace(/\{\{(\w+)(?:\|([^}]*))?\}\}/g,(_,key,ovr)=>{ const ff=d.fields.find(x=>x.k===key); const shown=ovr!=null?ovr:(ff?ff.orig:"");
+        return `<mark class="${!shown?"blank":""} ${key===DV.k?"target":""}${key==="c3"?" smudge":""}" data-k="${key}" tabindex="0" role="button" aria-label="${esc(ff?ff.n:key)}: ${esc(shown||"left blank")}. Select to check this field.">${shown?shown:"(left blank)"}</mark>`; });
+      return `<div class="ln">${html||"&nbsp;"}</div>`; }).join("");
+    $("#docPaper").innerHTML=(doc.blob?`<img class="preview-img" style="max-height:260px;margin:0 0 12px" alt="Your photo of the form" src="${doc.blob}">`:"")+`<div class="paper ${doc.style}"><span class="dk">${esc(doc.kind)}</span>${lines}</div>`;
+  }
+  const fl=flagOf(d,f), anomaly=fl&&fl.kind==="anomaly", entryFlag=fl&&fl.kind==="entry"&&f.state!=="override", idx=real.indexOf(f);
+  let acts="";
+  if(d.stage==="draft" && R==="entry"){
+    if(DV.editing) acts=`<div class="docacts"><label class="sr" for="docFix">Corrected value</label><input id="docFix" value="${esc((fl&&f.suggest&&f.v===f.orig)?f.suggest:(f.v||f.suggest||""))}"><button class="btn sm" data-dact="save">Save correction</button><button class="ghost" data-dact="cancel">Cancel</button></div>`;
+    else acts=`<div class="docacts"><button class="btn sm" data-dact="${entryFlag?"keep":"ok"}" ${!entryFlag&&f.state!=="proposed"?"disabled":""}>${entryFlag?(f.rule==="req"?"Confirm blank":"Confirm as is"):"Confirm: matches the document"}</button><button class="ghost fix" data-dact="edit">Correct</button></div>`;
+  } else if(d.stage==="draft" && isApprover() && (f.decision!=="escalate"||can("escalated")) && anomaly && f.state!=="proposed" && f.decision!=="accept"){
+    if(DV.editing) acts=`<div class="docacts"><label class="sr" for="docFix">Corrected value</label><input id="docFix" value="${esc(f.suggest||f.v)}"><button class="btn sm" data-dact="tmsave">Save correction</button><button class="ghost" data-dact="cancel">Cancel</button></div>`;
+    else acts=`<div class="docacts"><button class="btn sm" data-dact="accept">Accept</button><button class="ghost fix" data-dact="edit">Correct</button>${R==="hod"?`<button class="ghost" data-dact="escalate">Escalate</button>`:""}</div>`;
+  } else acts=`<div class="ro-note">${svg("eye",16)}<span>${d.stage!=="draft"?"Locked. Every change is in the audit trail.":anomaly&&R==="entry"?"Waiting for expert review by the Head of Department or Lab Manager.":`${esc(ROLES[R].short)}: view only for this field.`}</span></div>`;
+  const nextOpen = real.slice(idx+1).concat(real.slice(0,idx)).find(x=>x.state==="proposed");
+  $("#docSide").innerHTML=`<div class="top"><span class="fsrc">${esc(d.id)} · field ${idx+1} of ${real.length}</span><button class="xbtn" id="docClose" aria-label="Close document viewer">${svg("x",20)}</button></div>
+    <h2 id="docTitle">${esc(f.n)}</h2>
+    <div class="cmp"><div><small>Document says</small><span class="val">${esc(f.k==="c3"&&d.id==="DEMO-CIV-26-02051"?"~46.2 MPa (smudged)":f.orig||"blank")}</span></div><div><small>Value in LIMS</small><span class="val ${f.v?"":"missing"}">${esc(f.v||"missing")}</span>${f.conf!=null?`<div class="conf ${f.conf<.8?"low":""}"><span class="mini"><span style="width:${Math.round(f.conf*100)}%"></span></span>${Math.round(f.conf*100)}% read confidence</div>`:""}</div></div>
+    ${fl && (entryFlag||anomaly) ? `<div class="why" style="max-width:none;margin:0"><b>${esc(fl.type)}.</b> ${esc(fl.text)}</div>` : `<div class="fsrc" style="font-family:var(--sans)">No issues found by the AI. Compare it with the highlighted text before confirming.</div>`}
+    ${acts}
+    <div class="fieldnav"><button class="ghost" data-nav="${(idx-1+real.length)%real.length}">← Previous field</button>${nextOpen?`<button class="ghost fix" data-nav="${real.indexOf(nextOpen)}">Next unconfirmed →</button>`:`<span class="st ok" style="align-self:center">All values checked</span>`}</div>`;
+  $("#docClose").addEventListener("click",closeDoc);
+  $("#docTabs").querySelectorAll("[data-doc]").forEach(b=>b.addEventListener("click",()=>{ DV.src=b.dataset.doc; const first=d.fields.find(x=>!x.calc&&srcKey(x)===DV.src); if(first) DV.k=first.k; DV.editing=false; renderDoc(); }));
+  $("#docPaper").querySelectorAll("mark[data-k]").forEach(m=>{ m.addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); m.click(); } }); m.addEventListener("click",()=>{ const ff=d.fields.find(x=>x.k===m.dataset.k); if(ff){ DV.k=ff.k; DV.src=srcKey(ff); DV.editing=false; renderDoc(); } }); });
+  $("#docSide").querySelectorAll("[data-nav]").forEach(b=>b.addEventListener("click",()=>{ const ff=real[+b.dataset.nav]; DV.k=ff.k; DV.src=srcKey(ff); DV.editing=false; renderDoc(); }));
+  $("#docSide").querySelectorAll("[data-dact]").forEach(b=>b.addEventListener("click",()=>{
+    const a=b.dataset.dact;
+    if(a==="edit"){ DV.editing=true; renderDoc(); const i=$("#docFix"); i&&(i.focus(),i.select()); return; }
+    if(a==="cancel"){ DV.editing=false; renderDoc(); return; }
+    if(a==="save"||a==="tmsave"){ if(!applyAction(d,f,a,$("#docFix").value)) return; DV.editing=false; } else applyAction(d,f,a);
+    renderStaff(); renderDoc();
+  }));
+  const fx=$("#docFix"); if(fx) fx.addEventListener("keydown",e=>{ if(e.key==="Enter") $("#docSide [data-dact$=save]").click(); });
+}
+
+/* ================= help desk agent (draft p.30, 74, 107) ================= */
+const HD = {mode:null, history:[]};
+const INTENTS = [
+  {kw:["verify","check","genuine","scan","qr","fake","authentic"], a:"On the Verify page, scan the QR code with the portal's scanner, upload the report PDF, or type the report number. You'll see the report type, issue date, revision and status.", link:["Go to Verify","#verify"]},
+  {kw:["regulator","authority","municipal","submission","batch","several","several reports"], a:"You can check a whole submission at once on the Verify page: paste the report numbers, one per line, under “Check a whole submission”.", link:["Check a submission","#verify#batch"]},
+  {kw:["altered","changed","edited","date"], a:"Altered means someone changed the report, for example its date, so the fingerprint no longer matches AHSL's record. Don't accept it.", link:["See the six statuses","#verify#legend"]},
+  {kw:["amended","amend","revision","new version"], a:"Amended means a newer revision exists, so the copy is out of date. The Head of Department or Lab Manager amends reports under Staff › Issued reports.", link:["See the six statuses","#verify#legend"]},
+  {kw:["revoke","revoked","withdraw"], a:"Revoked means AHSL withdrew the report; every copy shows this. Only the Head of Department or Lab Manager can revoke, with MFA.", link:["Issued reports","#staff:issued"]},
+  {kw:["expired","validity","calibration"], a:"Expired means the report is past its validity period.", link:["See the six statuses","#verify#legend"]},
+  {kw:["not found","forged","invented"], a:"Not found means no such report exists, or the QR code wasn't signed by AHSL. It's a fake or invented QR code.", link:["See the six statuses","#verify#legend"]},
+  {kw:["scan a form","photograph","request form","front desk","register","intake","worksheet","data entry"], a:"Staff scan request forms and worksheets under Staff › Scan a form. The AI fills the fields; you check each one against the photo and confirm.", link:["Scan a form","#staff:scan"]},
+  {kw:["approve","sign","issue","expert review","routine"], a:"Routine reports go to normal approval and flagged reports to expert review, both by the Head of Department or Lab Manager in the work queue, with MFA.", link:["Work queue","#staff:queue"]},
+  {kw:["alert","audit","security"], a:"Alerts and the audit trail, which can't be edited, are under Staff › Alerts & audit, for the QHSE Manager.", link:["Alerts & audit","#staff:security"]},
+  {kw:["log","statistic","how many","target","70"], a:"Verification activity and progress toward the 70% portal target are under Staff › Verification log.", link:["Verification log","#staff:log"]}
+];
+function hdAdd(role, html){ HD.history.push({role,html}); const c=$("#chat"); const m=document.createElement("div"); m.className="msg "+(role==="me"?"me":"bot"); m.innerHTML=html; c.appendChild(m); c.scrollTop=c.scrollHeight; bindHdLinks(m); }
+function bindHdLinks(scope){ scope.querySelectorAll("[data-go]").forEach(b=>b.addEventListener("click",()=>hdGo(b.dataset.go))); scope.querySelectorAll("[data-tsend]").forEach(b=>b.addEventListener("click",()=>hdSendTemplate())); scope.querySelectorAll("[data-tstart]").forEach(b=>b.addEventListener("click",()=>hdTemplateStart())); }
+function hdGo(target){
+  if(target.startsWith("#staff:")){ S.tab=target.split(":")[1]; save(); location.hash="#staff"; route(); }
+  else if(target==="#verify#legend"||target==="#verify#batch"){ location.hash="#verify"; setTimeout(()=>$(target==="#verify#batch"?"#batch":"#legend").scrollIntoView({behavior:"smooth"}),80); }
+  else location.hash=target;
+  if(window.matchMedia("(max-width:640px)").matches) closeHelp();
+}
+function hdReply(q){
+  const t=q.toLowerCase();
+  if(HD.mode==="template"){ hdDraftTemplate(q); return; }
+  if(/template|custom (report|format)|report format|bilingual|layout/.test(t)){ if(S.user && S.user.type==="staff") hdTemplateStart(); else hdAdd("bot","Report templates are prepared by AHSL staff. I can help you check reports or explain the six statuses."); return; }
+  const hit=INTENTS.map(it=>({it, score:it.kw.filter(k=>t.includes(k)).length})).sort((a,b)=>b.score-a.score)[0];
+  if(!hit || !hit.score){ hdAdd("bot",`I can help you find things in the portal or draft a custom report template. Try one of the suggestions below, or ask “where do I find…”.`); return; }
+  const staffOnly = hit.it.link[1].startsWith("#staff");
+  if(staffOnly && (!S.user || S.user.type!=="staff")){ hdAdd("bot","That part of the portal is for AHSL staff. As a regulator, you can check reports on the Verify page: scan the QR code, upload the PDF or type the report number."); return; }
+  hdAdd("bot",`${esc(hit.it.a)}<div class="links"><button type="button" class="ghost fix" data-go="${hit.it.link[1]}">${svg("link",16)} ${esc(hit.it.link[0])}</button></div>`);
+}
+function hdTemplateStart(){
+  HD.mode="template";
+  hdAdd("bot",`Let's draft a custom report template. Describe what the client asked for, for example: <i>“Results in MPa and psi, English and Arabic headings, include the project phase and the consultant's name.”</i> Staff will review the draft before it can be used.`);
+  setTimeout(()=>$("#hdInput").focus(),30);
+}
+let HD_DRAFT=null;
+function hdDraftTemplate(req){
+  HD.mode=null; const t=req.toLowerCase(), s=["Header with report number, version and QR code with the printed verification instruction"];
+  if(/arabic|bilingual|english/.test(t)) s.push("Bilingual headings (English / Arabic)");
+  s.push("Client, project and sample details"+(/phase/.test(t)?", including project phase":"")+(/consultant|engineer/.test(t)?", and the consultant's name":""));
+  if(/psi|imperial/.test(t)) s.push("Results table with values in MPa and psi");
+  else if(/chart|graph/.test(t)) s.push("Results table with a trend chart");
+  else s.push("Results table with units");
+  if(/photo|image|picture/.test(t)) s.push("Sample photographs");
+  if(/limit|spec|pass|fail|conform/.test(t)) s.push("Specification limits and pass / fail statement");
+  s.push("Approver's digital signature block");
+  HD_DRAFT={name:"Custom template: "+(req.length>48?req.slice(0,48).trim()+"…":req), sections:s, req, forWho:"a client (requested through Sales / CRM)"};
+  hdAdd("bot",`Here's a draft:<ul>${s.map(x=>`<li>${esc(x)}</li>`).join("")}</ul><div class="links"><button type="button" class="btn sm" data-tsend>Send to staff for approval</button><button type="button" class="ghost" data-tstart>Start again</button></div>`);
+}
+function hdSendTemplate(){
+  if(!HD_DRAFT) return; const id="T"+Date.now().toString(36);
+  S.templates.push(Object.assign({id, status:"pending"}, HD_DRAFT)); log("TEMPLATES","Help desk agent","ai","Template drafted",HD_DRAFT.name+" sent for staff approval."); HD_DRAFT=null; save();
+  hdAdd("bot",`Sent. A Head of Department, the Lab Manager or the QHSE Manager will review it under Staff › Templates. I can't approve templates myself.<div class="links"><button type="button" class="ghost fix" data-go="#staff:templates">${svg("link",16)} Templates</button></div>`);
+  if(!$("#view-staff").hidden) renderStaff();
+}
+function openHelp(){
+  renderHdSuggest();
+  const h=$("#helpdesk"); if(!h.classList.contains("open")){ h.classList.add("open"); $("#helpFab").setAttribute("aria-expanded","true"); $("#helpFab").hidden=true;
+    if(!HD.history.length) hdAdd("bot",`Hi, I'm the portal's help desk agent. I can tell you where to find things, explain the six report statuses, or draft a custom report template for staff to approve.`); }
+  setTimeout(()=>$("#hdInput").focus(),30);
+}
+function closeHelp(){ $("#helpdesk").classList.remove("open"); $("#helpFab").hidden=false; $("#helpFab").setAttribute("aria-expanded","false"); $("#helpFab").focus(); }
+$("#helpFab").addEventListener("click",openHelp);
+$("#hdClose").addEventListener("click",closeHelp);
+$("#hdForm").addEventListener("submit",e=>{ e.preventDefault(); const q=$("#hdInput").value.trim(); if(!q) return; $("#hdInput").value=""; hdAdd("me",esc(q)); setTimeout(()=>hdReply(q),250); });
+function renderHdSuggest(){
+  const list = S.user && S.user.type==="staff" ? ["How do I check a report?","What does Altered mean?","Where do I approve reports?","Draft a custom report template"] : ["How do I check a report?","How do I check several reports?","What does Altered mean?","What does Amended mean?"];
+  $("#hdSuggest").innerHTML=list.map(x=>`<button type="button" class="chip">${esc(x)}</button>`).join("");
+  $("#hdSuggest").querySelectorAll(".chip").forEach(b=>b.addEventListener("click",()=>{ hdAdd("me",esc(b.textContent)); setTimeout(()=>hdReply(b.textContent),200); }));
+}
+
+/* ================= routing, theme, global keys ================= */
+let firstRoute=true, CHECKER="regulator";
+const HEADINGS={login:"#loginH1", verify:"#verifyH1", staff:"#staffH1"};
+function showView(v){
+  ["login","verify","staff"].forEach(x=>$("#view-"+x).hidden = x!==v);
+  $("#userBox").hidden = v==="login";
+  if(v==="login"){ $("#helpdesk").classList.remove("open"); $("#helpFab").hidden=true; }
+  else if(!$("#helpdesk").classList.contains("open")) $("#helpFab").hidden=false;
+}
+function renderLogin(){
+  const sel=$("#loginUser");
+  if(!sel.options.length){
+    const groups=[...new Set(USERS.map(u=>u.group))];
+    sel.innerHTML = `<option value="">Choose a user…</option>` + groups.map(g=>`<optgroup label="${esc(g)}">${USERS.filter(u=>u.group===g).map(u=>`<option value="${u.id}">${esc(userLabel(u))}</option>`).join("")}</optgroup>`).join("");
+  }
+  $("#pendingNote").hidden = !S.pending;
+}
+function route(){
+  const h=location.hash||"#home";
+  const deep=h.match(/^#v-(DEMO-[A-Z]{3}-\d{2}-\d{5})(?:-R(\d+))?(?:-([0-9a-fA-F]{16}))?$/);
+  if(!S.user){
+    if(deep){ S.pending=h; save(); }
+    showView("login"); renderLogin(); window.scrollTo(0,0);
+    if(!firstRoute) $("#loginH1").focus({preventScroll:true});
+    firstRoute=false; return;
+  }
+  const staff = S.user.type==="staff";
+  CHECKER = staff ? "ahsl" : "regulator";
+  const view = deep ? "verify" : (h.startsWith("#staff") && staff) ? "staff" : h.startsWith("#verify") ? "verify" : staff ? "staff" : "verify";
+  showView(view);
+  $("#ubName").textContent = staff ? ROLES[S.role].name : S.user.name;
+  $("#ubRole").textContent = staff ? `${ROLES[S.role].short} · AHSL` : S.user.org;
+  $("#backWs").hidden = !staff;
+  if(view==="verify" && !$("#rForm")) renderRegulator();
+  if(view==="staff") renderStaff();
+  if(deep){ $("#qNo").value=deep[1]+(deep[2]!=null?"/R"+deep[2]:""); $("#qDate").value=""; $("#qProj").value=""; window.scrollTo(0,0); runVerify({via:"QR scan", input:h.slice(3), copy:{}}); }
+  else window.scrollTo(0,0);
+  if(!firstRoute && !deep) $(HEADINGS[view]).focus({preventScroll:true});
+  firstRoute=false;
+}
+$("#loginPwToggle").addEventListener("click",e=>{ const i=$("#loginPw"), show=i.type==="password"; i.type=show?"text":"password"; e.currentTarget.textContent=show?"Hide":"Show"; e.currentTarget.setAttribute("aria-pressed",String(show)); });
+$("#loginUser").addEventListener("change",()=>{ $("#loginErr").textContent=""; $("#loginUser").removeAttribute("aria-invalid"); });
+$("#loginForm").addEventListener("submit",e=>{
+  e.preventDefault();
+  const u=USERS.find(x=>x.id===$("#loginUser").value);
+  if(!u){ $("#loginErr").innerHTML=`${svg("alert",16)} Choose a username.`; $("#loginUser").setAttribute("aria-invalid","true"); $("#loginUser").focus(); return; }
+  if(!$("#loginPw").value){ $("#loginErr").innerHTML=`${svg("alert",16)} Enter your password.`; $("#loginPw").focus(); return; }
+  S.user={id:u.id, type:u.type, name:u.name||"", org:u.org||""};
+  if(u.type==="staff"){ S.role=u.role; if(!TABS.find(t=>t.id===S.tab && t.need.some(can))) S.tab=TABS.find(t=>t.need.some(can)).id; S.sel=Math.min(S.sel||0,S.drafts.length-1); log("SECURITY",`${ROLES[u.role].name} (${ROLES[u.role].short})`,"sec","Signed in",`User ${u.id}, from a recognised device.`); }
+  const dest = S.pending || (u.type==="staff" ? "#staff" : "#verify"); S.pending=null; save();
+  $("#loginPw").value="demo-password";
+  if(location.hash===dest) route(); else location.hash=dest;
+  toast(`Signed in as ${u.type==="staff"?ROLES[u.role].short:u.name}.`);
+});
+$("#signOutBtn").addEventListener("click",()=>{
+  if(S.user && S.user.type==="staff") log("SECURITY",`${ROLES[S.role].name} (${ROLES[S.role].short})`,"sec","Signed out","");
+  S.user=null; save(); HD.history=[]; HD.mode=null; $("#chat").innerHTML=""; $("#result").innerHTML=EMPTY_RESULT; $("#rOut")&&($("#rOut").innerHTML="");
+  if(location.hash==="#login") route(); else location.hash="#login";
+});
+$("#backWs").addEventListener("click",()=>{ location.hash="#staff"; });
+window.addEventListener("hashchange",route);
+$("#verifyForm").addEventListener("submit",e=>{ e.preventDefault(); runVerify({via:"Reference lookup"}); });
+$("#qNo").addEventListener("input",()=>{ if($("#qNo").value.trim()){ $("#noErr").textContent=""; $("#qNo").removeAttribute("aria-invalid"); } });
+$("#scanBtn").addEventListener("click",()=>openScanner(handleScanned));
+$("#scanClose").addEventListener("click",closeScanner);
+$("#fileIn").addEventListener("change",e=>{ handleFiles(e.target.files); e.target.value=""; });
+const dz=$("#drop");
+["dragenter","dragover"].forEach(ev=>dz.addEventListener(ev,e=>{ e.preventDefault(); dz.classList.add("over"); }));
+["dragleave","drop"].forEach(ev=>dz.addEventListener(ev,e=>{ e.preventDefault(); dz.classList.remove("over"); }));
+dz.addEventListener("drop",e=>handleFiles(e.dataTransfer.files));
+window.addEventListener("dragover",e=>e.preventDefault()); window.addEventListener("drop",e=>e.preventDefault());
+$("#bellBtn").addEventListener("click",()=>toggleBell());
+document.addEventListener("click",e=>{ if(!e.target.closest(".notif-wrap") && !$("#notifPanel").hidden) toggleBell(false); });
+$("#resetBtn").addEventListener("click",()=>{ store.del("ahsl.v3"); HD.history=[]; $("#chat").innerHTML=""; loadState(); renderSamples(); renderLegend(); route(); toast("Demo reset."); });
+$("#skipBtn").addEventListener("click",()=>{ const v=["login","verify","staff"].find(x=>!$("#view-"+x).hidden); $(HEADINGS[v]).focus(); });
+document.addEventListener("keydown",e=>{
+  if(e.key==="Escape"){
+    if($("#mfaModal").classList.contains("open")) closeMfa();
+    else if($("#formModal").classList.contains("open")) closeForm();
+    else if($("#scanModal").classList.contains("open")) closeScanner();
+    else if(DV) closeDoc();
+    else if(!$("#notifPanel").hidden){ toggleBell(false); $("#bellBtn").focus(); }
+    else if($("#helpdesk").classList.contains("open")) closeHelp();
+    return;
+  }
+  if(e.key!=="Tab") return;
+  const open=[...document.querySelectorAll(".modal.open")].pop(); if(!open) return;
+  const f=[...open.querySelectorAll('button:not([disabled]),input:not([disabled]),select,textarea,[tabindex="0"],a[href],label.drop')].filter(x=>x.offsetParent!==null);
+  if(!f.length) return; const first=f[0], last=f[f.length-1];
+  if(e.shiftKey && document.activeElement===first){ e.preventDefault(); last.focus(); }
+  else if(!e.shiftKey && document.activeElement===last){ e.preventDefault(); first.focus(); }
+  else if(!open.contains(document.activeElement)){ e.preventDefault(); first.focus(); }
+});
+["docModal","scanModal","formModal"].forEach(id=>$("#"+id).addEventListener("click",e=>{ if(e.target.id===id){ id==="docModal"?closeDoc():id==="scanModal"?closeScanner():closeForm(); } }));
+function applyTheme(t){ document.documentElement.dataset.theme=t; $("#themeIcon").innerHTML=svg(t==="dark"?"sun":"moon",16); $("#themeLbl").textContent=t==="dark"?"Light":"Dark"; $("#themeBtn").setAttribute("aria-pressed",String(t==="dark")); }
+let theme=store.get("ahsl.theme") || (window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches ? "dark":"light");
+applyTheme(theme);
+$("#themeBtn").addEventListener("click",()=>{ theme=theme==="dark"?"light":"dark"; applyTheme(theme); store.set("ahsl.theme",theme); });
+
+/* Forms are handled in script so they also work where form submission is blocked (sandboxed previews) */
+function fireSubmit(form){ form.dispatchEvent(new Event("submit",{cancelable:true, bubbles:true})); }
+document.addEventListener("click",e=>{ const btn=e.target.closest('button[type="submit"]'); if(!btn || !btn.form) return; e.preventDefault(); if(!btn.disabled) fireSubmit(btn.form); }, true);
+document.addEventListener("keydown",e=>{
+  if(e.key!=="Enter") return; const el=e.target;
+  if(!(el instanceof HTMLInputElement) || !el.form || ["checkbox","radio","file","button","submit","reset"].includes(el.type)) return;
+  e.preventDefault(); if(e.isComposing || e.keyCode===229) return; fireSubmit(el.form);
+}, true);
+/* fill static icon placeholders */
+const EMPTY_RESULT = document.getElementById("result").innerHTML;
+document.querySelectorAll('[data-icon]').forEach(el=>{ el.outerHTML=svg(el.dataset.icon, +(el.dataset.size||16)); });
+/* boot */
+loadState(); renderLegend(); renderSamples(); route();
+window.__demo = {sha256, sha256Bytes, QR, verify:(i,o)=>verify(Object.assign({input:i},o||{})), state:()=>S};
+
+})();
+</script>
+</body>
+</html>
